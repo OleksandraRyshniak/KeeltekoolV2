@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Keeltekool_2.Data.Migrations
 {
     [DbContext(typeof(Keeltekool_2Context))]
-    [Migration("20260930192100_Initial")]
+    [Migration("20260930203517_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -33,6 +33,9 @@ namespace Keeltekool_2.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("AccountStatus")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -49,6 +52,10 @@ namespace Keeltekool_2.Data.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)

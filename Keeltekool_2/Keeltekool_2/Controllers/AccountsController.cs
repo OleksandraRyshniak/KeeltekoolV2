@@ -36,7 +36,7 @@ namespace Keeltekool_2.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return NotFound();
         }
 
         /*     R E G I S T R E E R I M I N E     */
@@ -53,7 +53,7 @@ namespace Keeltekool_2.Controllers
         }
 
         /// <summary>
-        /// Registreerib uue kasutaja
+        /// Registers a user in db, sends email to user for confirmation
         /// </summary>
         /// <param name="vm">Registreerimise vormi andmed</param>
         /// <returns>IActionResult</returns>
@@ -69,6 +69,7 @@ namespace Keeltekool_2.Controllers
                     Name = vm.Name,
                     Email = vm.Email,
                     Placeholder = vm.PlaceHolder,
+                    AccountStatus = (Core.Domain.RegisterStatus)Models.Accounts.RegisterStatus.Pending
                 };
 
                 var result = await _userManager.CreateAsync(user, vm.Password);
@@ -120,33 +121,51 @@ namespace Keeltekool_2.Controllers
         }
 
         /// <summary>
-        /// Kinnitab kasutaja e-posti lingi kaudu
+        /// User is returned to this view, when link in email clicked.
         /// </summary>
-        /// <param name="userId">Kasutaja Id</param>
-        /// <param name="token">Kinnitustoken</param>
-        /// <returns>IActionResult</returns>
+        /// <param name="userID">users id</param>
+        /// <param name="token">clicktoken</param>
+        /// <returns>This view</returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        public async Task<IActionResult> ConfirmEmail(string userID, string token)
         {
-            if (userId == null || token == null)
+            if (userID == null || token == null)
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userID);
+
             if (user == null)
             {
+                ViewBag.ErrorMessage = $"The user with id of {userID} is not valid";
                 return NotFound();
             }
-
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Home");
+                ViewBag.IsSuccess = true;
+                return View();
             }
+            else
+            {
+                ViewBag.IsSuccess = false;
+                return View();
+            }
+            return RedirectToAction("Index", "Home");
+        }
 
-            return BadRequest("Email confirmation failed");
+        /// <summary>
+        /// gets the login view
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(string? returnUrl)
+        {
+            return View();
         }
     }
 }
