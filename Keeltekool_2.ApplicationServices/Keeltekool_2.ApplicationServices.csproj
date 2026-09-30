@@ -8,9 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.12" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.12" />
+ 
     <PackageReference Include="Nancy" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Keeltekool_2.Core\Keeltekool_2.Core.csproj" />
+    <ProjectReference Include="..\Keeltekool_2.Data\Keeltekool_2.Data.csproj" />
   </ItemGroup>
 
 </Project>
