@@ -1,5 +1,8 @@
 ﻿using Keeltekool_2.Core.Domain;
+using Keeltekool_2.Core.DTO;
+using Keeltekool_2.Core.ServiceInterface;
 using Keeltekool_2.Models.Accounts;
+using MailKit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,18 +14,16 @@ namespace Keeltekool_2.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        //private readonly IEmailServices _emailServices;
+        private readonly IEmailingServices _emailServices;
 
-        public AccountsController
-           (
-               UserManager<ApplicationUser> userManager,
-               SignInManager<ApplicationUser> signInManager/*,
-                IEmailServices emailServices*/
-           )
+        public AccountsController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IEmailingServices emailServices)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            //_emailServices = emailServices;
+            _emailServices = emailServices;
         }
 
         // Sisukord:
@@ -76,20 +77,23 @@ namespace Keeltekool_2.Controllers
                 {
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                    var confirmationLink = Url.Action("ConfirmEmail", "Accounts", new { userId = user.Id, token = token }, Request.Scheme);
+                    var confirmationLink = Url.Action(
+                        "ConfirmEmail", "Accounts",
+                        new { userId = user.Id, token = token },
+                        Request.Scheme);
 
-                    // TODO: saada kiri, kui IEmailServices ja EmailTokenDto on olemas
-                    // EmailTokenDto newsignup = new();
-                    // newsignup.Token = token;
-                    // newsignup.Body = $"Please registrate your account by: <a href=\"{confirmationLink}\">clicking here</a>";
-                    // newsignup.Subject = "CRUD registration";
-                    // newsignup.To = user.Email;
-                    // _emailServices.SendEmailToken(newsignup, token);
+                    EmailTokenDTO newsignup = new();
+                    newsignup.Token = token;
+                    newsignup.Body = $"Palun kinnita oma konto vajutades <a href=\"{confirmationLink}\">siia</a>";
+                    newsignup.Subject = "Keeltekooli registreerimine";
+                    newsignup.To = user.Email!;
 
                     if (_signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
                         return RedirectToAction("ListUsers", "Administrations");
                     }
+
+                    _emailServices.SendEmailToken(newsignup, token);
 
                     List<string> errordatas =
                         [
@@ -97,7 +101,7 @@ namespace Keeltekool_2.Controllers
                         "Issue", "Success",
                         "StatusMessage", "Registration Sucesss",
                         "ActedOn", $"{vm.Email}",
-                        "CreatedAccountData", $"{vm.Email}\n{vm.Name}\n[password hidden]\n[password hidden]"
+                        "CreatedAccountData", $"{vm.Email}\n{vm.PlaceHolder}\n[password hidden]\n[password hidden]"
                         ];
                     ViewBag.ErrorDatas = errordatas;
                     ViewBag.ErrorTitle = "You have successfully registered";
@@ -113,6 +117,36 @@ namespace Keeltekool_2.Controllers
             }
 
             return View(vm);
+        }
+
+        /// <summary>
+        /// Kinnitab kasutaja e-posti lingi kaudu
+        /// </summary>
+        /// <param name="userId">Kasutaja Id</param>
+        /// <param name="token">Kinnitustoken</param>
+        /// <returns>IActionResult</returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return BadRequest("Email confirmation failed");
         }
     }
 }

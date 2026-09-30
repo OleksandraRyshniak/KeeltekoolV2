@@ -2,6 +2,10 @@ using Keeltekool_2.Core.Domain;
 using Keeltekool_2.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Keeltekool_2.Core.ServiceInterface;
+using Keeltekool_2.ApplicationServices.Services;
+
+
 
 namespace Keeltekool_2
 
@@ -16,6 +20,8 @@ namespace Keeltekool_2
             builder.Services.AddControllersWithViews();
 
             //services
+
+            builder.Services.AddScoped<IEmailingServices, EmailingServices>();
             //apiclients
 
             //dbcontext
