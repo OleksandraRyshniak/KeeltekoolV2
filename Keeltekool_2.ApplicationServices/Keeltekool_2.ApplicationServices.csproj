@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Keeltekool_2.Core\Keeltekool_2.Core.csproj" />
     <ProjectReference Include="..\Keeltekool_2.Data\Keeltekool_2.Data.csproj" />
+	  <ProjectReference Include="..\KeelteKoolV2.Data\KeelteKoolV2.Data.csproj" />
   </ItemGroup>
 
 </Project>

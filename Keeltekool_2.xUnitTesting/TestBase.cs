@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Keeltekool_2.xUnitTesting.Macros;
+
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Security.Authentication.ExtendedProtection;
@@ -25,7 +28,7 @@ namespace Keeltekool_2.xUnitTesting
 
         public virtual void SetupServices(IServiceCollection services)
         {
-            //services.AddScoped<ILanguageCoursesServices, LanguageCoursesServices>();
+            services.AddScoped<ILanguageCoursesServices, LanguageCoursesServices>();
             //services.AddScoped<IFileServices, FileServices>();
             IServiceCollection serviceCollection = services.AddScoped<IHostEnvironment, MockIHostEnvironment>();
 
@@ -34,7 +37,22 @@ namespace Keeltekool_2.xUnitTesting
                 {
                     x.UseInMemoryDatabase("TEST");
                     x.ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-                });
+                }
+                );
+            RegisterMacros(services);
+        }
+
+        private void RegisterMacros(IServiceCollection services)
+        {
+            var macroBaseType = typeof(IMacros);
+
+            var macros = macroBaseType.Assembly.GetTypes()
+                .Where(t => macroBaseType.IsAssignableFrom(t)
+                && !t.IsInterface && !t.IsAbstract);
+            foreach (var macro in macros)
+            {
+                services.AddSingleton(macro);
+            }
         }
 
         public void Dispose()

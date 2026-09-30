@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Keeltekool_2.xUnitTesting
 {
-    internal class RegisterUnitTests
+    public class RegisterUnitTests : TestBase
     {
     }
 }

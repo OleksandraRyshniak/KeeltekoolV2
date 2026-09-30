@@ -24,6 +24,8 @@
     <ProjectReference Include="..\..\Keeltekool_2.ApplicationServices\Keeltekool_2.ApplicationServices.csproj" />
     <ProjectReference Include="..\..\Keeltekool_2.Core\Keeltekool_2.Core.csproj" />
     <ProjectReference Include="..\..\Keeltekool_2.Data\Keeltekool_2.Data.csproj" />
-  </ItemGroup>
+	      <ProjectReference Include="..\..\Keeltekool_2.xUnitTesting\Keeltekool_2.xUnitTesting.csproj" />
+
+    <Project Path="../KeelteKoolV2.xUnitTesting/KeelteKoolV2.xUnitTesting.csproj" Id="a0d54aa4-c177-4449-8d9e-0a0b8b668389" />    </ItemGroup>
 
 </Project>
