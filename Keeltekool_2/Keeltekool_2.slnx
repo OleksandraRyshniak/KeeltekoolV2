@@ -2,5 +2,6 @@
   <Project Path="../Keeltekool_2.ApplicationServices/Keeltekool_2.ApplicationServices.csproj" />
   <Project Path="../Keeltekool_2.Core/Keeltekool_2.Core.csproj" />
   <Project Path="../Keeltekool_2.Data/Keeltekool_2.Data.csproj" />
+  <Project Path="../Keeltekool_2.xUnitTesting/Keeltekool_2.xUnitTesting.csproj" Id="43327d3d-3720-4db4-8eda-32c52c8f2128" />
   <Project Path="Keeltekool_2/Keeltekool_2.csproj" />
 </Solution>

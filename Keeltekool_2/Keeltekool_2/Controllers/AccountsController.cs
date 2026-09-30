@@ -271,7 +271,10 @@ namespace Keeltekool_2.Controllers
                 if (user != null && await _userManager.IsEmailConfirmedAsync(user))
                 {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var passwordResetLink = Url.Action("ResetPassword", "Accounts", new { email = model.Email, token = token }, Request.Scheme);
+                    var passwordResetLink = Url.Action(
+                        "ResetPassword", "Accounts",
+                        new { email = model.Email, token = token },
+                        Request.Scheme);
 
                     var emailDto = new EmailDTO
                     {
@@ -280,10 +283,9 @@ namespace Keeltekool_2.Controllers
                         Body = $"Please reset your password by clicking <a href='{passwordResetLink}'>here</a>"
                     };
 
-                    _emailingServices.SendEmail(emailDto);
-
-                    return View("ForgotPasswordConfirmation");
+                    _emailServices.SendEmail(emailDto);
                 }
+
                 return View("ForgotPasswordConfirmation");
             }
             return View(model);
