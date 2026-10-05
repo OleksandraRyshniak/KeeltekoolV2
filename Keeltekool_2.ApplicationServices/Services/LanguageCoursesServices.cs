@@ -31,8 +31,17 @@ namespace Keeltekool_2.ApplicationServices.Services
             //omistab andmed andmeedasikandeobjektist domeenimudelile
             //lahendades ära küsimused mis ei lahendatud kontrolleris, nagu näiteks id, createdat, modifiedat
             domain.Id = Guid.NewGuid();
-            domain.Nimetus = dto.Nimetus;
-            domain.Keel = dto.Keel;
+            domain.Nimetus = "";
+            domain.Keel = "";
+            //if nimetus empty, return null
+            if (domain.Nimetus.Length < 1)
+            {
+                return null;
+            }
+            if (domain.Keel.Length < 1)
+            {
+                return null;
+            }
             domain.Kirjeldus = dto.Kirjeldus;
             domain.Tase = dto.Tase;
             domain.CreatedAt = DateTime.Now;

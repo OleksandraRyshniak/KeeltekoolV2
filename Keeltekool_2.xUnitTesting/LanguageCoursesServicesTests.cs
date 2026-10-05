@@ -39,5 +39,40 @@ namespace Keeltekool_2.xUnitTesting
             ning viise kuidas teste kirjutada veelgi rohkem.
              */
         }
+        [Fact]
+        public async Task ShouldNot_AddNewCourse_WhenFieldsEmpty()
+        {
+            //ülesseade
+            LanguageCourseDTO newCourse = MockLanguageCourseDTOData();
+            newCourse.Keel = string.Empty;
+            newCourse.Nimetus = string.Empty;
+            //tegevus
+            var result = await Svc<ILanguageCoursesServices>().Create(newCourse);
+            //kontroll
+            Assert.Null(result); //kontrollime et teenus lükkaks objekti lisamise tagasi
+            if (result != null)
+            {
+                //kontrollime et keel oleks juurde lisatud, ja mitte tühi
+                Assert.NotNull(result.Keel);
+                Assert.NotNull(result.Nimetus);
+                //kontrollime et muutujates oleks midagi lisatud
+                Assert.True(result.Keel.Length > 0);
+                Assert.False(result.Nimetus.Length < 1);
+                //kontrollime et teenus ei kaota ära vahepeal andmeid mis me sisestasime
+                Assert.Equal(newCourse.Keel, result.Keel);
+                Assert.Equal(newCourse.Nimetus, result.Nimetus);
+            }
+        }
+
+        private LanguageCourseDTO MockLanguageCourseDTOData()
+        {
+            return new LanguageCourseDTO
+            {
+                Nimetus = "TestKursus",
+                Keel = "Eesti keel",
+                Tase = "Algtase",
+                Kirjeldus = "A0 tasemel eesti keele \"õpe\", tule ja raiska aega"
+            };
+        }
     }
 }
