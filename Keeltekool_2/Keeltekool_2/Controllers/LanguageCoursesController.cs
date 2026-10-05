@@ -1,4 +1,5 @@
 ﻿using Keeltekool_2.Core.Domain;
+using Keeltekool_2.Core.DTO;
 using Keeltekool_2.Core.ServiceInterface;
 using Keeltekool_2.Data;
 using Keeltekool_2.Models.LanguageCourses;
@@ -19,6 +20,7 @@ namespace Keeltekool_2.Controllers
         }
         public IActionResult Index()
         {
+            //var result = _context.L
             return View();
             //need to get all, not under test rn
         }
@@ -32,7 +34,7 @@ namespace Keeltekool_2.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(LanguageCourseViewModel vm)
         {
             //kontrollime et vm ei oleks null

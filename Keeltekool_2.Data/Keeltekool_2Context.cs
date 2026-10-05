@@ -1,6 +1,7 @@
 ﻿using Keeltekool_2.Core.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace Keeltekool_2.Data
 {
@@ -8,7 +9,9 @@ namespace Keeltekool_2.Data
     {
         public Keeltekool_2Context(DbContextOptions<Keeltekool_2Context> options) : base(options)
         {
-            //set tables here
+
         }
+        //set tables here
+        public DbSet<LanguageCourse> LanguageCourses { get; set; }
     }
 }

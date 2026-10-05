@@ -20,6 +20,7 @@
   </ItemGroup>
 <ItemGroup>
   <ProjectReference Include="..\Keeltekool_2.ApplicationServices\Keeltekool_2.ApplicationServices.csproj" />
+  <ProjectReference Include="..\Keeltekool_2.Core\Keeltekool_2.Core.csproj" />
   <ProjectReference Include="..\Keeltekool_2.Data\Keeltekool_2.Data.csproj" />
 </ItemGroup>
 
