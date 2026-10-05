@@ -22,6 +22,7 @@ namespace Keeltekool_2
             //services
 
             builder.Services.AddScoped<IEmailingServices, EmailingServices>();
+            builder.Services.AddScoped<ILanguageCoursesServices, LanguageCoursesServices>();
             //apiclients
 
             //dbcontext
