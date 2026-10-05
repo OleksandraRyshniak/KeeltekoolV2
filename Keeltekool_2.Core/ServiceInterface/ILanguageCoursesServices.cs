@@ -10,7 +10,7 @@ namespace Keeltekool_2.Core.ServiceInterface
     {
         Task<LanguageCourse> Create(LanguageCourseDTO dto);
         Task<LanguageCourse> Update(LanguageCourseDTO dto);
-        Task<LanguageCourse> Update(Guid id);
+        Task<LanguageCourse> DetailsAsync(Guid id);
         Task<LanguageCourse> Delete(Guid id);
     }
 }

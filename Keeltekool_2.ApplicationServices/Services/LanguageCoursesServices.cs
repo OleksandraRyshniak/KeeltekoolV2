@@ -59,7 +59,7 @@ namespace Keeltekool_2.ApplicationServices.Services
         {
             return null;
         }
-        public async Task<LanguageCourse> Update(Guid id)
+        public async Task<LanguageCourse> DetailsAsync(Guid id)
         {
             return null;
         }
@@ -68,7 +68,7 @@ namespace Keeltekool_2.ApplicationServices.Services
             return null;
         }
 
-        public Task<LanguageCourse> DetailsAsync(Guid id)
+        public Task<LanguageCourse> Update(Guid id)
         {
             throw new NotImplementedException();
         }
