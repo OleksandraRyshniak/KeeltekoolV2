@@ -1,6 +1,7 @@
 ﻿using Keeltekool_2.Core.Domain;
 using Keeltekool_2.Core.DTO;
 using Keeltekool_2.Data;
+using Keeltekool_2.Core.ServiceInterface;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -31,6 +32,11 @@ namespace Keeltekool_2.ApplicationServices.Services
         public async Task<LanguageCourse> Delete(Guid id)
         {
             return null;
+        }
+
+        public Task<LanguageCourse> DetailsAsync(Guid id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -19,8 +19,10 @@
     </PackageReference>
   </ItemGroup>
 <ItemGroup>
-		<ProjectReference Include="..\KeelteKoolV2.Data\KeelteKoolV2.Data.csproj" />
-	</ItemGroup>
+  <ProjectReference Include="..\Keeltekool_2.ApplicationServices\Keeltekool_2.ApplicationServices.csproj" />
+  <ProjectReference Include="..\Keeltekool_2.Data\Keeltekool_2.Data.csproj" />
+</ItemGroup>
+
 
 	
 	

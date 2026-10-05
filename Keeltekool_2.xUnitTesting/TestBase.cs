@@ -1,68 +1,42 @@
-﻿using Keeltekool_2.Data;
-using Keeltekool_2.xUnitTesting.Mock;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Keeltekool_2.xUnitTesting.Macros;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Keeltekool_2.Core.DTO;
+using Keeltekool_2.Core.ServiceInterface;
 using System;
 using System.Collections.Generic;
-using System.Security.Authentication.ExtendedProtection;
 using System.Text;
-using System.Web.Mvc;
+using Xunit;
 
 namespace Keeltekool_2.xUnitTesting
 {
-    public abstract class TestBase
+    public class LanguageCoursesServicesTests : TestBase
     {
-        protected IServiceProvider serviceProvider { get; set; }
-
-        protected TestBase()
+        [Fact] //Käsusõna, mida testrunner tunneb, et aru saada mis on test, ja mis ei ole
+        // 1 - Kirjeldatakse ära, kas test on tavaline (peaks/ei tohi teha), või negatiivne (ei tohi/peaks tegema)
+        // 2 - Mida parasjagu testiga testitakse.
+        // 3 - Mis tingimustel tulemust kontrollitakse, peale tegevust
+        //                  1           2           3
+        //                  \/          \/          \/
+        public async Task Should_AddNewCourse_WhenResultIsReturned()
         {
-            var services = new ServiceCollection();
-            SetupServices(services);
-            serviceProvider = services.BuildServiceProvider();
-        }
+            //ülesseade
+            LanguageCourseDTO newCourseDTO = new LanguageCourseDTO();
+            newCourseDTO.Nimetus = "TestKursus";
+            newCourseDTO.Keel = "Eesti keel";
+            newCourseDTO.Tase = "Algtase";
+            newCourseDTO.Kirjeldus = "A0 tasemel eesti keele \"õpe\", tule ja raiska aega";
 
-        public virtual void SetupServices(IServiceCollection services)
-        {
-            services.AddScoped<ILanguageCoursesServices, LanguageCoursesServices>();
-            //services.AddScoped<IFileServices, FileServices>();
-            IServiceCollection serviceCollection = services.AddScoped<IHostEnvironment, MockIHostEnvironment>();
+            //tegevus
+            var result = await Svc<ILanguageCoursesServices>().Create(newCourseDTO);
 
-            services.AddDbContext<Keeltekool_2Context>
-                (x =>
-                {
-                    x.UseInMemoryDatabase("TEST");
-                    x.ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-                }
-                );
-            RegisterMacros(services);
-        }
-
-        private void RegisterMacros(IServiceCollection services)
-        {
-            var macroBaseType = typeof(IMacros);
-
-            var macros = macroBaseType.Assembly.GetTypes()
-                .Where(t => macroBaseType.IsAssignableFrom(t)
-                && !t.IsInterface && !t.IsAbstract);
-            foreach (var macro in macros)
-            {
-                services.AddSingleton(macro);
-            }
-        }
-
-        public void Dispose()
-        {
-
-        }
-
-        protected T Svc<T>()
-        {
-            return serviceProvider.GetService<T>();
+            //kontroll
+            Assert.NotNull(result);
+            /*
+             Assert on klass mille abil saab kontrollita andmete eri tingimusi, kujusid, olekuid jne.
+            Antud juhul kontrollitakse eelnevat objekti ühe kontrolliga - et ei oleks tühi.
+            Aga, kui meie meetod pärast selle sisu arendamist hakkab juba tagastama mingisugust objekti, 
+            tuleks testi täiendada, täpsemate tingimustega, mis kontrollib näiteks, kas on samasugune, 
+            sisaldab kindlal kujul andmeid, andmed on mingit kindlat tüüpi jne. Võimalusi mida kontrollida on palju,
+            ning viise kuidas teste kirjutada veelgi rohkem.
+             */
         }
     }
 }
