@@ -5,6 +5,7 @@ using Keeltekool_2.Core.ServiceInterface;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Keeltekool_2.ApplicationServices.Services
 {
@@ -31,8 +32,8 @@ namespace Keeltekool_2.ApplicationServices.Services
             //omistab andmed andmeedasikandeobjektist domeenimudelile
             //lahendades ära küsimused mis ei lahendatud kontrolleris, nagu näiteks id, createdat, modifiedat
             domain.Id = Guid.NewGuid();
-            domain.Nimetus = "";
-            domain.Keel = "";
+            //domain.Nimetus = "";
+            //domain.Keel = "";
             //if nimetus empty, return null
             if (domain.Nimetus.Length < 1)
             {
@@ -42,6 +43,8 @@ namespace Keeltekool_2.ApplicationServices.Services
             {
                 return null;
             }
+            domain.Keel = dto.Keel;
+            domain.Nimetus = dto.Nimetus;
             domain.Kirjeldus = dto.Kirjeldus;
             domain.Tase = dto.Tase;
             domain.CreatedAt = DateTime.Now;
@@ -61,7 +64,9 @@ namespace Keeltekool_2.ApplicationServices.Services
         }
         public async Task<LanguageCourse> DetailsAsync(Guid id)
         {
-            return null;
+            var result = await _context.LanguageCourses
+                .FirstOrDefaultAsync(x => x.Id == id);
+            return result;
         }
         public async Task<LanguageCourse> Delete(Guid id)
         {
