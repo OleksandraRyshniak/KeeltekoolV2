@@ -83,28 +83,7 @@ namespace Keeltekool_2.Controllers
         }
 
        
-        [HttpGet]
-        public async Task<IActionResult> Details(Guid id)
-        {
-            if (id == Guid.Empty)
-            {
-                return NotFound();
-            }
-            var languageCourse = await _languageCoursesServices.DetailsAsync(id);
-            if(languageCourse == null)
-            {
-                return NotFound();
-            }
-            var vm = new LanguageCourseViewModel()
-            {};
-            vm.Id = languageCourse.Id;
-            vm.Kirjeldus = languageCourse.Kirjeldus;
-            vm.Nimetus = languageCourse.Nimetus;
-            vm.Keel = languageCourse.Keel;
-            vm.Tase = languageCourse.Tase;
-            return View(vm);
 
-        }
 
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
@@ -161,6 +140,31 @@ namespace Keeltekool_2.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return NotFound();
+            }
+            var languageCourse = await _languageCoursesServices.DetailsAsync(id);
+            if (languageCourse == null)
+            {
+                return NotFound();
+            }
+            var vm = new LanguageCourseViewModel()
+            { };
+            vm.Id = languageCourse.Id;
+            vm.Kirjeldus = languageCourse.Kirjeldus;
+            vm.Nimetus = languageCourse.Nimetus;
+            vm.Keel = languageCourse.Keel;
+            vm.Tase = languageCourse.Tase;
+            ViewData["ViewType"] = "delete";
+
+            return View("DetailsDelete", vm);
+        }
+
 
     }
 }
