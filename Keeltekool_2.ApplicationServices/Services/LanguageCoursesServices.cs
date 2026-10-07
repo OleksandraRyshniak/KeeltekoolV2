@@ -35,11 +35,11 @@ namespace Keeltekool_2.ApplicationServices.Services
             //domain.Nimetus = "";
             //domain.Keel = "";
             //if nimetus empty, return null
-            if (domain.Nimetus.Length < 1)
+            if (dto.Nimetus.Length < 1)
             {
                 return null;
             }
-            if (domain.Keel.Length < 1)
+            if (dto.Keel.Length < 1)
             {
                 return null;
             }
@@ -60,7 +60,19 @@ namespace Keeltekool_2.ApplicationServices.Services
         }
         public async Task<LanguageCourse> Update(LanguageCourseDTO dto)
         {
-            return null;
+            LanguageCourse domain = new LanguageCourse();
+            domain.Id = (Guid)dto.Id;
+            domain.Kirjeldus = dto.Kirjeldus;
+            domain.Nimetus = dto.Nimetus;
+            domain.Keel = dto.Keel;
+            domain.ModifiedAt = DateTime.Now;
+            domain.CreatedAt = dto.CreatedAt ?? DateTime.Now;
+            domain.Tase = dto.Tase;
+
+            _context.ChangeTracker.Clear();
+            _context.LanguageCourses.Update(domain);
+            var result = await _context.SaveChangesAsync();
+            return domain;
         }
         public async Task<LanguageCourse> DetailsAsync(Guid id)
         {

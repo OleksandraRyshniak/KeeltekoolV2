@@ -26,6 +26,7 @@ namespace Keeltekool_2.Controllers
             var result = _context.LanguageCourses
                 .Select(x => new LanguageCourseViewModel
                 {
+                    Id=x.Id,
                     Nimetus = x.Nimetus,
                     Keel = x.Keel,
                 }).Take(20).OrderBy(x => x.Keel);
@@ -36,14 +37,14 @@ namespace Keeltekool_2.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            LanguageCourseViewModel vm = new();
-            return View(vm);
+            LanguageCourseCreateUpdateViewModel vm = new();
+            return View("CreateUpdate", vm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         //[Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(LanguageCourseViewModel vm)
+        public async Task<IActionResult> Create(LanguageCourseCreateUpdateViewModel vm)
         {
             //kontrollime et vm ei oleks null
             if (vm == null)
@@ -80,6 +81,8 @@ namespace Keeltekool_2.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
+       
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
@@ -102,5 +105,62 @@ namespace Keeltekool_2.Controllers
             return View(vm);
 
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Update(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return NotFound();
+            }
+            var courseToUpdate = await _languageCoursesServices.DetailsAsync(id);
+            if(courseToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            var vm = new LanguageCourseCreateUpdateViewModel()
+            {};
+            vm.Id = courseToUpdate.Id;
+            vm.Nimetus = courseToUpdate.Nimetus;
+            vm.Keel = courseToUpdate.Keel;
+            vm.Tase = courseToUpdate.Tase;
+            vm.Kirjeldus = courseToUpdate.Kirjeldus;
+            vm.CreatedAt = courseToUpdate.CreatedAt;
+            vm.ModifiedAt = courseToUpdate.ModifiedAt;
+
+            return View("CreateUpdate", vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(LanguageCourseCreateUpdateViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("CreateUpdate", vm);
+            }
+
+            var dto = new LanguageCourseDTO()
+            {
+                Id = vm.Id,
+                Nimetus = vm.Nimetus,
+                Keel = vm.Keel,
+                Tase = vm.Tase,
+                Kirjeldus = vm.Kirjeldus,
+                CreatedAt = vm.CreatedAt,
+                ModifiedAt = vm.ModifiedAt
+            };
+
+            var result = await _languageCoursesServices.Update(dto);
+
+            if (result == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

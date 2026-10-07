@@ -1,4 +1,4 @@
-﻿@model Keeltekool_2.Models.LanguageCourses.LanguageCourseViewModel
+﻿@model Keeltekool_2.Models.LanguageCourses.LanguageCourseCreateUpdateViewModel
 
 @* separate update create *@
 
@@ -32,9 +32,16 @@
             <span asp-validation-for="Kirjeldus" class="text-danger"></span>
         </div>
 
-        @* create only, later add update, checkforid *@
+        @if (Model.Id.HasValue)
+        {
+            <input asp-action="update" asp-controller="LanguageCourses" type="submit" value="Muuda" class="btn btn-success" />
+        }
+        else
+        {
+            <input asp-action="create" asp-controller="LanguageCourses" type="submit" value="okeiks" class="btn btn-success" />
+        }
 
-        <input asp-action="create" asp-controller="LanguageCourses" type="submit" value="Loo Keelekursus" class="btn btn-success" />
+        <a asp-action="Index" asp-controller="LanguageCourses" class="btn btn-secondary">Tagasi</a>
 
     </form>
 </div>

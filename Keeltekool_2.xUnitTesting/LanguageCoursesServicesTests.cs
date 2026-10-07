@@ -1,5 +1,6 @@
 ﻿using Keeltekool_2.Core.DTO;
 using Keeltekool_2.Core.ServiceInterface;
+using Keeltekool_2.Core.Domain;
 using Keeltekool_2.xUnitTesting;
 using System;
 using System.Collections.Generic;
@@ -88,7 +89,58 @@ namespace Keeltekool_2.xUnitTesting
             ////võrdleme kas objekt on sama nagu see mis me genereerisime, va. id-ga
             Assert.Equal(result, createdCourse);
         }
+        // 1 - Kirjeldatakse ära, kas test on tavaline (peaks/ei tohi teha), või negatiivne (ei tohi/peaks tegema)
+        // 2 - Mida parasjagu testiga testitakse.
+        // 3 - Mis tingimustel tulemust kontrollitakse, peale tegevust
+        //                  1           2           3
+        //                  \/          \/          \/
+        public async Task Should_UpdateWithNewData_WhenDataIsDiffrentFromDB(LanguageCourseDTO result)
+        {
+            // ülesseade
+            Core.Domain.LanguageCourse createdCourse = await AddObjectToDB();
 
+            LanguageCourseDTO updatedCourse = new LanguageCourseDTO();
+            updatedCourse.Id = createdCourse.Id;
+            updatedCourse.Keel = createdCourse.Keel;
+            updatedCourse.Kirjeldus = createdCourse.Kirjeldus;
+            updatedCourse.Nimetus = "Uusnimetus";
+            updatedCourse.ModifiedAt = DateTime.UtcNow;
+
+            // tegevus
+            LanguageCourse languageCourse = await Svc<ILanguageCoursesServices>().Update(updatedCourse);
+
+            //kontroll
+            Assert.NotNull(result);
+            Assert.Equal(updatedCourse.Id, result.Id);
+            Assert.Equal(updatedCourse.Keel, result.Keel);
+            Assert.Equal(updatedCourse.Kirjeldus, result.Kirjeldus);
+            Assert.Equal(updatedCourse.Tase, result.Tase);
+            Assert.Equal(updatedCourse.Nimetus, result.Nimetus);
+        }
+
+        private async Task<Core.Domain.LanguageCourse> AddObjectToDB()
+        {
+            LanguageCourseDTO course = MockLanguageCourseDTOData();
+            var createdCourse = await Svc<ILanguageCoursesServices>().Create(course);
+            return createdCourse;
+        }
+
+        [Fact]
+        public async Task Should_DeleteDataFromDB_WhenValidIDIsGiven()
+        {
+            //ülesseade
+            Core.Domain.LanguageCourse createdCourse = await AddObjectToDB();
+
+            //tegevus
+            var deleteCourse = await Svc<ILanguageCoursesServices>().Delete(createdCourse.Id);
+            var result = await Svc<ILanguageCoursesServices>().DetailsAsync(createdCourse.Id);
+
+            //Kontroll
+            Assert.Null(result);
+            Assert.Equal(createdCourse, deleteCourse);
+            Assert.Equal(createdCourse.Id, deleteCourse.Id);
+            Assert.NotEqual(deleteCourse, result);
+        }
 
         private LanguageCourseDTO MockLanguageCourseDTOData()
         {
