@@ -1,6 +1,7 @@
 ﻿using Keeltekool_2.Core.Domain;
 using Keeltekool_2.Core.DTO;
 using Keeltekool_2.Core.ServiceInterface;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Keeltekool_2.ApplicationServices.Services
     {
         public Task<Lecturer> Create(LecturerDTO dto)
         {
-            throw new NotImplementedException();
+          
         }
 
         public Task<Lecturer> Delete(Guid id)
