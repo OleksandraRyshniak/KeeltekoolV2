@@ -29,8 +29,8 @@ namespace Keeltekool_2.xUnitTesting
         public virtual void SetupServices(IServiceCollection services)
         {
             IServiceCollection serviceCollection = services.AddScoped<ILanguageCoursesServices, LanguageCoursesServices>();
-            //IServiceCollection serviceCollection1 = services.AddScoped<ILecturersServices, LecturersServices>();
-            //IServiceCollection serviceCollection2 = services.AddScoped<IFilesServices, FileServices>();
+            services.AddScoped<ILecturersServices, LecturersServices>();
+            services.AddScoped<IFilesServices, FileServices>();
 
 
             services.AddScoped<IHostEnvironment, MockIHostEnvironment>();

@@ -14,7 +14,7 @@ namespace Keeltekool_2.Core.DTO
 
         //Fullname TBA
         public string Qualification { get; set; }
-        public string UserID { get; set; }
+        public string? UserID { get; set; }
         // public ICollection<LanguageSubject> LanguageSubject { get; set; }
 
         public List<IFormFile>? Files { get; set; }
