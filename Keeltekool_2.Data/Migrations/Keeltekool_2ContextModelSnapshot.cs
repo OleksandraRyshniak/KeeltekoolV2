@@ -131,7 +131,7 @@ namespace Keeltekool_2.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LanguageCourses");
+                    b.ToTable("LanguageCourse");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
