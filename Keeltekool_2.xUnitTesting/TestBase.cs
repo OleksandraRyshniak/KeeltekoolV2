@@ -26,22 +26,25 @@ namespace Keeltekool_2.xUnitTesting
             serviceProvider = services.BuildServiceProvider();
         }
 
+        private readonly string _databaseName = Guid.NewGuid().ToString();
+
         public virtual void SetupServices(IServiceCollection services)
         {
-            IServiceCollection serviceCollection = services.AddScoped<ILanguageCoursesServices, LanguageCoursesServices>();
+            services.AddScoped<ILanguageCoursesServices, LanguageCoursesServices>();
             services.AddScoped<ILecturersServices, LecturersServices>();
             services.AddScoped<IFilesServices, FileServices>();
 
-
             services.AddScoped<IHostEnvironment, MockIHostEnvironment>();
 
-            services.AddDbContext<Keeltekool_2Context>
-                (x =>
-                {
-                    x.UseInMemoryDatabase("TEST");
-                    x.ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-                }
-                );
+            services.AddDbContext<Keeltekool_2Context>(options =>
+            {
+                options.UseInMemoryDatabase(_databaseName);
+                options.EnableSensitiveDataLogging();
+                options.EnableDetailedErrors();
+                options.ConfigureWarnings(w =>
+                    w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+            });
+
             RegisterMacros(services);
         }
 

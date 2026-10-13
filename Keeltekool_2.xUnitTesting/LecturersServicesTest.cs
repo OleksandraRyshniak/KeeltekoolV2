@@ -4,6 +4,7 @@ using Keeltekool_2.Core.ServiceInterface;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Keeltekool_2.xUnitTesting
@@ -14,17 +15,18 @@ namespace Keeltekool_2.xUnitTesting
         public async Task Should_AddNewLecturer_WhenResultISReturned()
         {
             //ülesseade
-            LecturerDTO dto = new LecturerDTO();
-            dto.FirstName = "Test";
-            dto.LastName = "Test";
-            dto.Qualification= "Testicles";
-            // dto.Image =
+            LecturerDTO dto = MockLecturerDTOData();
 
             //tegevus
             var result = await Svc<ILecturersServices>().Create(dto);
 
             //kontroll
             Assert.NotNull(result);
+            Assert.NotEqual(Guid.Empty, result.Id);
+            Assert.Equal(dto.FirstName, result.FirstName);
+            Assert.Equal(dto.LastName, result.LastName);
+            Assert.Equal(dto.Qualification, result.Qualification);
+            Assert.False(string.IsNullOrWhiteSpace(result.UserID));
         }
 
         //details test
@@ -40,9 +42,7 @@ namespace Keeltekool_2.xUnitTesting
 
             //kontroll
             Assert.NotNull(result);
-            //Assert.Equal(result.Id, createdLecture.Id);
-            //Assert.True(result.Id == createdLecture.Id);
-            //Assert.Equal(result, createdLecture);
+            Assert.Equal(createdLecture.Id, result.Id);
         }
 
         //update test
@@ -54,54 +54,54 @@ namespace Keeltekool_2.xUnitTesting
 
             LecturerDTO updateDto = new LecturerDTO();
             updateDto.Id = createdLecture.Id;
-            updateDto.FirstName = createdLecture.FirstName;
-            updateDto.LastName = createdLecture.LastName;
-            updateDto.Qualification = createdLecture.Qualification;
+            updateDto.FirstName = "UpdatedFirstName";
+            updateDto.LastName = "UpdatedLastName";
+            updateDto.Qualification = "UpdatedQualification";
 
             //tegevus
-
             var result = await Svc<ILecturersServices>().Update(updateDto);
 
             //kontroll
             Assert.NotNull(result);
-            //Assert.Equal(updateDto.Id, result.Id);
-            //Assert.Equal(updateDto.FirstName, result.FirstName);
-            //Assert.Equal(updateDto.LastName, result.LastName);
-            //Assert.Equal(updateDto.Qualification, result.Qualification);
+            Assert.Equal(updateDto.Id, result.Id);
+            Assert.Equal(updateDto.FirstName, result.FirstName);
+            Assert.Equal(updateDto.LastName, result.LastName);
+            Assert.Equal(updateDto.Qualification, result.Qualification);
         }
 
         //delete test
+
         [Fact]
         public async Task Should_DeleteLecturer_WhenValidIdIsGiven()
         {
-            //ülesseade
+            // Arrange
             Lecturer created = await AddLecturerToDB();
 
-            //tegevus
-            //var deleted = await Svc<ILecturersServices>().Delete(created.Id);
+            // Act
             var result = await Svc<ILecturersServices>().Delete(created.Id);
+            var deleted = await Svc<ILecturersServices>().DetailAsync(created.Id);
 
-            //kontroll
-            Assert.Null(result);
-            //Assert.Equal(created.Id, deleted.Id);
-            //Assert.NotEqual(deleted, result);
+            // Assert
+            Assert.NotNull(result);
+            Assert.Null(deleted);
         }
+
 
         private async Task<Lecturer> AddLecturerToDB()
         {
             return await Svc<ILecturersServices>().Create(MockLecturerDTOData());
         }
+
+
         private LecturerDTO MockLecturerDTOData()
         {
             return new LecturerDTO
             {
                 FirstName = "Test",
                 LastName = "Test",
-                Qualification = "Testicles"
+                Qualification = "Testicles",
+                UserID = "TestUser123"
             };
         }
     }
-
-
-    
 }

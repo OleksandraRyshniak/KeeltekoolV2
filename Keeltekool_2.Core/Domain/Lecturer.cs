@@ -11,8 +11,8 @@ namespace Keeltekool_2.Core.Domain
         public string LastName { get; set; }
 
         //Fullname TBA
-        public string Qualification { get; set; }
-        public string UserID { get; set; }
+        public string? Qualification { get; set; }
+        public string? UserID { get; set; }
        // public ICollection<LanguageSubject> LanguageSubject { get; set; }
 
         public DateTime CreatedAt { get; set; }

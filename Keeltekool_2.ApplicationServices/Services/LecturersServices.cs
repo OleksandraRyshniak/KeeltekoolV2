@@ -28,18 +28,18 @@ namespace Keeltekool_2.ApplicationServices.Services
 
             Lecturer domain = new Lecturer();
             domain.Id = Guid.NewGuid();
-            if (dto.FirstName.Length < 1)
+            if (string.IsNullOrWhiteSpace(dto.FirstName))
             {
                 dto.FirstName = "Jane";
             }
-            if (dto.LastName.Length < 1)
+            if (string.IsNullOrWhiteSpace(dto.LastName))
             {
                 dto.LastName = "Doe";
             }
             domain.FirstName = dto.FirstName;
             domain.LastName = dto.LastName;
             domain.Qualification = dto.Qualification;
-            domain.UserID = dto.UserID;
+            domain.UserID = dto.UserID ?? "TestUser123";
             domain.CreatedAt = DateTime.Now;
             domain.ModifiedAt = DateTime.Now;
 
