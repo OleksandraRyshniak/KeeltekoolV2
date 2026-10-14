@@ -16,7 +16,7 @@ else
     <dl class="row">
         <div class="form-group row">
             <label asp-for="Id" class="col-sm-2 col-form-label"></label>
-            <span>@Html.DisplayFor(model => model.Id)</span>
+            <span id="DD_LanguageCourseGuid">@Html.DisplayFor(model => model.Id)</span>
         </div>
     </dl>
 </div>
@@ -26,7 +26,7 @@ else
     <dl class="row">
         <div class="form-group row">
             <label asp-for="Id" class="col-sm-2 col-form-label"></label>
-            <span>@Html.DisplayFor(model => model.Nimetus)</span>
+            <span id="DD_LanguageCourseNimetus">@Html.DisplayFor(model => model.Nimetus)</span>
         </div>
     </dl>
 </div>
@@ -36,7 +36,7 @@ else
     <dl class="row">
         <div class="form-group row">
             <label asp-for="Id" class="col-sm-2 col-form-label"></label>
-            <span>@Html.DisplayFor(model => model.Keel)</span>
+            <span id="DD_LanguageCourseKeel">@Html.DisplayFor(model => model.Keel)</span>
         </div>
     </dl>
 </div>
@@ -46,7 +46,7 @@ else
     <dl class="row">
         <div class="form-group row">
             <label asp-for="Id" class="col-sm-2 col-form-label"></label>
-            <span>@Html.DisplayFor(model => model.Kirjeldus)</span>
+            <span id="DD_LanguageCourseKirjeldus">@Html.DisplayFor(model => model.Kirjeldus)</span>
         </div>
     </dl>
 </div>
@@ -56,7 +56,7 @@ else
     <dl class="row">
         <div class="form-group row">
             <label asp-for="Id" class="col-sm-2 col-form-label"></label>
-            <span>@Html.DisplayFor(model => model.Tase)</span>
+            <span id="DD_LanguageCourseTase">@Html.DisplayFor(model => model.Tase)</span>
         </div>
     </dl>
 
@@ -64,15 +64,15 @@ else
     {
         <form asp-action="DeleteConfirmed">
             <input type="hidden" asp-for="Id"/>
-            <input type="submit" value="Kustuta" class="btn btn-danger"/>
+            <input id="DeleteDelete_BTN" type="submit" value="Kustuta" class="btn btn-danger"/>
         </form>
         <br />
-        <a asp-action="Index" asp-controller="LanguageCourses" class="btn btn-warning">Tühista</a>
+        <a id="DeleteCalce_BTN" asp-action="Index" asp-controller="LanguageCourses" class="btn btn-warning">Tühista</a>
     }
     else
     {
-        <a asp-action="Update" asp-controller="LanguageCourses" class="btn btn-warning">Muuda</a>
-        <a asp-action="Index" asp-controller="LanguageCourses" class="btn btn-warning">Tagasi</a>
+        <a id="DetailsUpdate_BTN" asp-action="Update" asp-controller="LanguageCourses" class="btn btn-warning">Muuda</a>
+        <a id="DetailsBack_BTN" asp-action="Index" asp-controller="LanguageCourses" class="btn btn-warning">Tagasi</a>
     }
     
 </div>
