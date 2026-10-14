@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using System;
@@ -11,7 +12,7 @@ namespace Keeltekool_2.SeleniumTesting
     public class LanguageCourseFrontendTests
     {
         [Fact]
-        public void Should_NavigateToIndex_AddSpaceshipWithCorrectData_ReturnToIndex()
+        public void Should_NavigateToIndex_AddLanguageWithCorrectData_ReturnToIndex()
         {
             //Ülesseade
             IWebDriver driver = TestSetup_NavigateToIndex();
@@ -110,9 +111,12 @@ namespace Keeltekool_2.SeleniumTesting
                 }
             }
             Thread.Sleep(500);
+            DataClear_CreateUpdate(driver);
             DataEntry_LanguageCourse(driver, true);
             IWebElement updateclick = driver.FindElement(By.Id("CU_Update_BTN"));
             updateclick.Click();
+            IWebElement goBack = driver.FindElement(By.Id("CU_Cancel_BTN"));
+            goBack.Click();
 
             /* kontrolle */
             //otsi objekt üles:
@@ -152,6 +156,20 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.NotEqual("Kursusel õpime mis on manuaaltestimine, kuidas erineb automaattestimisest ning " +
                     "mis dokumentatsioon manuaaltestimise juures tähtis on ning kuidas neid kirjutada.", details_tase);
         }
+
+        private void DataClear_CreateUpdate(IWebDriver driver)
+        {
+            IWebElement createEntryNimetus = driver.FindElement(By.Id("CU_LanguageCourse_Nimetus"));
+            createEntryNimetus.Clear();
+            IWebElement createEntryKeel = driver.FindElement(By.Id("CU_LanguageCourse_Keel"));
+            createEntryKeel.Clear();
+            IWebElement createEntryTase = driver.FindElement(By.Id("CU_LanguageCourse_Tase"));
+            createEntryTase.Clear();
+            IWebElement createEntryKirjeldus = driver.FindElement(By.Id("CU_LanguageCourse_Kirjeldus"));
+            createEntryKirjeldus.Clear();
+        }
+
+        //Delete
 
         public void DataEntry_LanguageCourse(IWebDriver driver, bool isOneOrTwo = false)
         {
