@@ -34,14 +34,14 @@
         <br />
         @if (Model.Id.HasValue)
         {
-            <input id=CU_Update_BTN" asp-action="update" asp-controller="LanguageCourses" type="submit" value="Muuda" class="btn btn-success" />
+            <input id="CU_Update_BTN" asp-action="update" asp-controller="LanguageCourses" type="submit" value="Muuda" class="btn btn-success" />
         }
         else
         {
-            <input id=CU_Create_BTN" asp-action="create" asp-controller="LanguageCourses" type="submit" value="okeiks" class="btn btn-success" />
+            <input id="CU_Create_BTN" asp-action="create" asp-controller="LanguageCourses" type="submit" value="Loo" class="btn btn-success" />
         }
 
-        <a id=CU_Cancel_BTN" asp-action ="Index" asp-controller="LanguageCourses" class="btn btn-secondary">Tagasi</a>
+        <a id="CU_Cancel_BTN" asp-action="Index" asp-controller="LanguageCourses" class="btn btn-secondary">Tagasi</a>
 
     </form>
 </div>
