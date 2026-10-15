@@ -52,37 +52,37 @@ namespace Keeltekool_2.SeleniumTesting
     {
         public static string thisRunGuid { get; set; }
 
-        /// <summary>
-        /// Test which creates a new object
-        /// </summary>
-        [Fact]
-        [Order(100)]
-        public void Should_NavigateToIndex_AddLanguageWithCorrectData_ReturnToIndex()
-        {
-            //Ülesseade
-            IWebDriver driver = TestSetup_NavigateToIndex();
+        ///// <summary>
+        ///// Test which creates a new object
+        ///// </summary>
+        //[Fact]
+        //[Order(100)]
+        //public void Should_NavigateToIndex_AddLanguageWithCorrectData_ReturnToIndex()
+        //{
+        //    //Ülesseade
+        //    IWebDriver driver = TestSetup_NavigateToIndex();
 
-            //tegevus
-            IWebElement indexCreateButton = driver.FindElement(By.Id("IndexCreateNewLanguageCourse_BTN"));
-            indexCreateButton.Click();
-            DataEntry_LanguageCourse(driver);
-            IWebElement CreateCreateButton = driver.FindElement(By.Id("CU_Create_BTN"));
-            CreateCreateButton.Click();
+        //    //tegevus
+        //    IWebElement indexCreateButton = driver.FindElement(By.Id("IndexCreateNewLanguageCourse_BTN"));
+        //    indexCreateButton.Click();
+        //    DataEntry_LanguageCourse(driver);
+        //    IWebElement CreateCreateButton = driver.FindElement(By.Id("CU_Create_BTN"));
+        //    CreateCreateButton.Click();
 
-            //kontroll
-            //kogume andmed
-            var nimetused = driver.FindElements(By.Id("IndexTableCourseNimetus"));
-            var keeled = driver.FindElements(By.Id("IndexTableCourseKeel"));
-            string LanguageCourseNameData = nimetused[nimetused.Count - 1].Text;
-            string LanguageCourseKeelData = keeled[keeled.Count - 1].Text;
-            // string LanguageCourseTaseData = driver.FindElement(By.Id("IndexTableCourseTase")).Text;
-            Thread.Sleep(500);
-            driver.Quit();
-            //assertime
-            Assert.Equal("Automaattestimise kursus", LanguageCourseNameData);
-            Assert.Equal("C# + Selenium & xUnit", LanguageCourseKeelData);
-            Assert.True(LanguageCourseNameData == "Automaattestimise kursus" && LanguageCourseKeelData == "C# + Selenium & xUnit");
-        }
+        //    //kontroll
+        //    //kogume andmed
+        //    var nimetused = driver.FindElements(By.Id("IndexTableCourseNimetus"));
+        //    var keeled = driver.FindElements(By.Id("IndexTableCourseKeel"));
+        //    string LanguageCourseNameData = nimetused[nimetused.Count - 1].Text;
+        //    string LanguageCourseKeelData = keeled[keeled.Count - 1].Text;
+        //    // string LanguageCourseTaseData = driver.FindElement(By.Id("IndexTableCourseTase")).Text;
+        //    Thread.Sleep(500);
+        //    driver.Quit();
+        //    //assertime
+        //    Assert.Equal("Automaattestimise kursus", LanguageCourseNameData);
+        //    Assert.Equal("C# + Selenium & xUnit", LanguageCourseKeelData);
+        //    Assert.True(LanguageCourseNameData == "Automaattestimise kursus" && LanguageCourseKeelData == "C# + Selenium & xUnit");
+        //}
 
         /// <summary>
         /// Test which creates a new object, holding a unique id in the "Name" field
@@ -133,66 +133,66 @@ namespace Keeltekool_2.SeleniumTesting
 
         //siia vaja details (READ) test
 
-        /// <summary>
-        /// Test to navigate to the details page of an object.
-        /// </summary>
-        [Fact]
-        [Order(200)]
-        public void Should_NavigateToDetailsOfLanguageCourse_WithPreviouslyCorrectData()
-        {
-            //ülesseade
-            IWebDriver driver = TestSetup_NavigateToIndex();
-            var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
-            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
-            rowsOfTable.RemoveAt(0);
-            bool isObjectFound = false;
-            string details_id = "";
-            string details_name = "";
-            string details_keel = "";
-            string details_kirjeldus = "";
-            string details_tase = "";
+        ///// <summary>
+        ///// Test to navigate to the details page of an object.
+        ///// </summary>
+        //[Fact]
+        //[Order(200)]
+        //public void Should_NavigateToDetailsOfLanguageCourse_WithPreviouslyCorrectData()
+        //{
+        //    //ülesseade
+        //    IWebDriver driver = TestSetup_NavigateToIndex();
+        //    var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+        //    List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+        //    rowsOfTable.RemoveAt(0);
+        //    bool isObjectFound = false;
+        //    string details_id = "";
+        //    string details_name = "";
+        //    string details_keel = "";
+        //    string details_kirjeldus = "";
+        //    string details_tase = "";
 
-            //tegevus
-            foreach (var row in rowsOfTable)
-            {
-                var nameElement = row.FindElement(By.Id("IndexTableCourseNimetus")).Text;
-                var keelElement = row.FindElement(By.Id("IndexTableCourseKeel")).Text;
-                if((nameElement == "Automaattestimise kursus") && (keelElement=="C# + Selenium & xUnit"))
-                {
-                    isObjectFound = true;
-                    var clickAction = row
-                        .FindElement(By.Id("IndexTableCourseActions"))
-                        .FindElement(By.Id("IndexTableCourseDetails_BTN"));
-                    clickAction.Click();
-                    break;
-                }
-            }
+        //    //tegevus
+        //    foreach (var row in rowsOfTable)
+        //    {
+        //        var nameElement = row.FindElement(By.Id("IndexTableCourseNimetus")).Text;
+        //        var keelElement = row.FindElement(By.Id("IndexTableCourseKeel")).Text;
+        //        if((nameElement == "Automaattestimise kursus") && (keelElement=="C# + Selenium & xUnit"))
+        //        {
+        //            isObjectFound = true;
+        //            var clickAction = row
+        //                .FindElement(By.Id("IndexTableCourseActions"))
+        //                .FindElement(By.Id("IndexTableCourseDetails_BTN"));
+        //            clickAction.Click();
+        //            break;
+        //        }
+        //    }
 
-            // Ainult siis, kui leidsime kursuse, püüame laadida detaile
-            if (isObjectFound)
-            {
-                Thread.Sleep(500);
-                //find data
-                details_id = driver.FindElement(By.Id("DD_LanguageCourseGuid")).Text;
-                details_name = driver.FindElement(By.Id("DD_LanguageCourseNimetus")).Text;
-                details_keel = driver.FindElement(By.Id("DD_LanguageCourseKeel")).Text;
-                details_kirjeldus = driver.FindElement(By.Id("DD_LanguageCourseKirjeldus")).Text;
-                details_tase = driver.FindElement(By.Id("DD_LanguageCourseTase")).Text;
-                IWebElement goBack = driver.FindElement(By.Id("DetailsBack_BTN"));
-            }
+        //    // Ainult siis, kui leidsime kursuse, püüame laadida detaile
+        //    if (isObjectFound)
+        //    {
+        //        Thread.Sleep(500);
+        //        //find data
+        //        details_id = driver.FindElement(By.Id("DD_LanguageCourseGuid")).Text;
+        //        details_name = driver.FindElement(By.Id("DD_LanguageCourseNimetus")).Text;
+        //        details_keel = driver.FindElement(By.Id("DD_LanguageCourseKeel")).Text;
+        //        details_kirjeldus = driver.FindElement(By.Id("DD_LanguageCourseKirjeldus")).Text;
+        //        details_tase = driver.FindElement(By.Id("DD_LanguageCourseTase")).Text;
+        //        IWebElement goBack = driver.FindElement(By.Id("DetailsBack_BTN"));
+        //    }
 
-            driver.Quit();
+        //    driver.Quit();
 
-            //kontroll
-            Assert.True(isObjectFound, "Kursust 'Automaattestimise kursus' ei leitud. Kontrolli, et test andmed on loodud.");
-            Assert.NotEmpty(details_id);
-            Assert.NotEmpty(details_name);
-            Assert.NotEmpty(details_keel);
-            Assert.NotEmpty(details_kirjeldus);
-            Assert.NotEmpty(details_tase);
-            Assert.Equal("Automaattestimise kursus", details_name);
-            Assert.Equal("C# + Selenium & xUnit", details_keel);
-        }
+        //    //kontroll
+        //    Assert.True(isObjectFound, "Kursust 'Automaattestimise kursus' ei leitud. Kontrolli, et test andmed on loodud.");
+        //    Assert.NotEmpty(details_id);
+        //    Assert.NotEmpty(details_name);
+        //    Assert.NotEmpty(details_keel);
+        //    Assert.NotEmpty(details_kirjeldus);
+        //    Assert.NotEmpty(details_tase);
+        //    Assert.Equal("Automaattestimise kursus", details_name);
+        //    Assert.Equal("C# + Selenium & xUnit", details_keel);
+        //}
 
         /// <summary>
         /// Test which navigates to the details of a previously added specific object
@@ -253,77 +253,77 @@ namespace Keeltekool_2.SeleniumTesting
 
         //vaja teha uuenduse test (UPDATE)
 
-        /// <summary>
-        /// Test which updates an object with new data
-        /// </summary>
-        [Fact]
-        [Order(300)]
-        public void Should_UpdateDetailsOfLanguageCourse_WithNewData()
-        {
-            /* Ülesseade */
-            IWebDriver driver = TestSetup_NavigateToIndex();
-            var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
-            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
-            rowsOfTable.RemoveAt(0);
-            bool isObjectFound = false;
+        ///// <summary>
+        ///// Test which updates an object with new data
+        ///// </summary>
+        //[Fact]
+        //[Order(300)]
+        //public void Should_UpdateDetailsOfLanguageCourse_WithNewData()
+        //{
+        //    /* Ülesseade */
+        //    IWebDriver driver = TestSetup_NavigateToIndex();
+        //    var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+        //    List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+        //    rowsOfTable.RemoveAt(0);
+        //    bool isObjectFound = false;
 
-            /* tegevus */
-            foreach (var row in rowsOfTable)
-            {
-                var nameElement = row.FindElement(By.Id("IndexTableCourseNimetus")).Text;
-                var keelElement = row.FindElement(By.Id("IndexTableCourseKeel")).Text;
-                if ((nameElement == "Automaattestimise kursus") && (keelElement == "C# + Selenium & xUnit"))
-                {
-                    isObjectFound = true;
+        //    /* tegevus */
+        //    foreach (var row in rowsOfTable)
+        //    {
+        //        var nameElement = row.FindElement(By.Id("IndexTableCourseNimetus")).Text;
+        //        var keelElement = row.FindElement(By.Id("IndexTableCourseKeel")).Text;
+        //        if ((nameElement == "Automaattestimise kursus") && (keelElement == "C# + Selenium & xUnit"))
+        //        {
+        //            isObjectFound = true;
                    
-                    row.FindElement(By.Id("IndexTableCourseActions"))
-                       .FindElement(By.Id("IndexTableCourseUpdate_BTN"))
-                       .Click();
-                    break;
-                }
-            }
-            Assert.True(isObjectFound, "Kursust 'Automaattestimise kursus' ei leitud.");
+        //            row.FindElement(By.Id("IndexTableCourseActions"))
+        //               .FindElement(By.Id("IndexTableCourseUpdate_BTN"))
+        //               .Click();
+        //            break;
+        //        }
+        //    }
+        //    Assert.True(isObjectFound, "Kursust 'Automaattestimise kursus' ei leitud.");
 
-            DataClear_CreateUpdate(driver);
-            DataEntry_LanguageCourse(driver, true);
-            driver.FindElement(By.Id("CU_Update_BTN")).Click();
+        //    DataClear_CreateUpdate(driver);
+        //    DataEntry_LanguageCourse(driver, true);
+        //    driver.FindElement(By.Id("CU_Update_BTN")).Click();
 
-            driver.FindElement(By.LinkText("Keelekursused")).Click();
+        //    driver.FindElement(By.LinkText("Keelekursused")).Click();
 
-            /* kontrolle */
+        //    /* kontrolle */
            
-            tableOfIndex = driver.FindElement(By.Id("IndexTable"));
-            rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
-            rowsOfTable.RemoveAt(0);
-            isObjectFound = false;
-            foreach (var row in rowsOfTable)
-            {
-                var nameElement = row.FindElement(By.Id("IndexTableCourseNimetus")).Text;
-                var keelElement = row.FindElement(By.Id("IndexTableCourseKeel")).Text;
-                if ((nameElement == "Manuaaltestimise kursus") && (keelElement == "Mantis, Excel"))
-                {
-                    isObjectFound = true;
-                    row.FindElement(By.Id("IndexTableCourseActions"))
-                       .FindElement(By.Id("IndexTableCourseDetails_BTN"))
-                       .Click();
-                    break;
-                }
-            }
-            Assert.True(isObjectFound, "Uuendatud kursust ei leitud.");
+        //    tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+        //    rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+        //    rowsOfTable.RemoveAt(0);
+        //    isObjectFound = false;
+        //    foreach (var row in rowsOfTable)
+        //    {
+        //        var nameElement = row.FindElement(By.Id("IndexTableCourseNimetus")).Text;
+        //        var keelElement = row.FindElement(By.Id("IndexTableCourseKeel")).Text;
+        //        if ((nameElement == "Manuaaltestimise kursus") && (keelElement == "Mantis, Excel"))
+        //        {
+        //            isObjectFound = true;
+        //            row.FindElement(By.Id("IndexTableCourseActions"))
+        //               .FindElement(By.Id("IndexTableCourseDetails_BTN"))
+        //               .Click();
+        //            break;
+        //        }
+        //    }
+        //    Assert.True(isObjectFound, "Uuendatud kursust ei leitud.");
 
-            string details_id = driver.FindElement(By.Id("DD_LanguageCourseGuid")).Text;
-            string details_name = driver.FindElement(By.Id("DD_LanguageCourseNimetus")).Text;
-            string details_keel = driver.FindElement(By.Id("DD_LanguageCourseKeel")).Text;
-            string details_kirjeldus = driver.FindElement(By.Id("DD_LanguageCourseKirjeldus")).Text;
-            string details_tase = driver.FindElement(By.Id("DD_LanguageCourseTase")).Text;
-            driver.Quit();
+        //    string details_id = driver.FindElement(By.Id("DD_LanguageCourseGuid")).Text;
+        //    string details_name = driver.FindElement(By.Id("DD_LanguageCourseNimetus")).Text;
+        //    string details_keel = driver.FindElement(By.Id("DD_LanguageCourseKeel")).Text;
+        //    string details_kirjeldus = driver.FindElement(By.Id("DD_LanguageCourseKirjeldus")).Text;
+        //    string details_tase = driver.FindElement(By.Id("DD_LanguageCourseTase")).Text;
+        //    driver.Quit();
 
-            Assert.NotEmpty(details_id);
-            Assert.Equal("Manuaaltestimise kursus", details_name);
-            Assert.Equal("Mantis, Excel", details_keel);
-            Assert.Equal("2", details_tase);
-            Assert.Equal("Kursusel õpime mis on manuaaltestimine.", details_kirjeldus);
-        }
+        //    Assert.NotEmpty(details_id);
+        //    Assert.Equal("Manuaaltestimise kursus", details_name);
+        //    Assert.Equal("Mantis, Excel", details_keel);
+        //    Assert.Equal("2", details_tase);
+        //    Assert.Equal("Kursusel õpime mis on manuaaltestimine.", details_kirjeldus);
+        //}
 
         /// <summary>
         /// Test which updates a specific previously added object with new data
@@ -405,54 +405,54 @@ namespace Keeltekool_2.SeleniumTesting
         /// <summary>
         /// Test which removes an object
         /// </summary>
-        [Fact]
-        [Order(400)]
-        public void Should_DeleteLanguageCourse_FromDeleteView()
-        {
-            /* Ülesseade */
-            IWebDriver driver = TestSetup_NavigateToIndex();
-            var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
-            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
-            rowsOfTable.RemoveAt(0);
-            bool isObjectFound = false;
+        //[Fact]
+        //[Order(400)]
+        //public void Should_DeleteLanguageCourse_FromDeleteView()
+        //{
+        //    /* Ülesseade */
+        //    IWebDriver driver = TestSetup_NavigateToIndex();
+        //    var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+        //    List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+        //    rowsOfTable.RemoveAt(0);
+        //    bool isObjectFound = false;
 
-            /* tegevus */
-            foreach (var row in rowsOfTable)
-            {
-                var nameElement = row.FindElement(By.Id("IndexTableCourseNimetus")).Text;
-                var keelElement = row.FindElement(By.Id("IndexTableCourseKeel")).Text;
-                if ((nameElement == "Manuualtestimise kursus") && (keelElement == "Mantis, Excel"))
-                {
-                    isObjectFound = true;
-                    var clickAction = row;
-                    row.FindElement(By.Id("IndexTableCourseActions"))
-                       .FindElement(By.Id("IndexTableCourseDelete_BTN"))
-                       .Click();
-                    break;
-                }
-            }
-            Thread.Sleep(1000);
-            IWebElement clickDelete = driver.FindElement(By.Id("DeleteDelete_BTN"));
-            clickDelete.Click();
+        //    /* tegevus */
+        //    foreach (var row in rowsOfTable)
+        //    {
+        //        var nameElement = row.FindElement(By.Id("IndexTableCourseNimetus")).Text;
+        //        var keelElement = row.FindElement(By.Id("IndexTableCourseKeel")).Text;
+        //        if ((nameElement == "Manuualtestimise kursus") && (keelElement == "Mantis, Excel"))
+        //        {
+        //            isObjectFound = true;
+        //            var clickAction = row;
+        //            row.FindElement(By.Id("IndexTableCourseActions"))
+        //               .FindElement(By.Id("IndexTableCourseDelete_BTN"))
+        //               .Click();
+        //            break;
+        //        }
+        //    }
+        //    Thread.Sleep(1000);
+        //    IWebElement clickDelete = driver.FindElement(By.Id("DeleteDelete_BTN"));
+        //    clickDelete.Click();
 
-            //kontroll
-            isObjectFound = false;
-            tableOfIndex = driver.FindElement(By.Id("IndexTable"));
-            rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
-            rowsOfTable.RemoveAt(0);
-            foreach (var row in rowsOfTable)
-            {
-                var nameElement = row.FindElement(By.Id("IndexTableCourseNimetus")).Text;
-                var keelElement = row.FindElement(By.Id("IndexTableCourseKeel")).Text;
-                if ((nameElement == "Manuualtestimise kursus") && (keelElement == "Mantis, Excel"))
-                {
-                    isObjectFound = true;
-                    break;
-                }
-            }
-            Assert.False(isObjectFound);
-            Assert.True(!isObjectFound);
-        }
+        //    //kontroll
+        //    isObjectFound = false;
+        //    tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+        //    rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+        //    rowsOfTable.RemoveAt(0);
+        //    foreach (var row in rowsOfTable)
+        //    {
+        //        var nameElement = row.FindElement(By.Id("IndexTableCourseNimetus")).Text;
+        //        var keelElement = row.FindElement(By.Id("IndexTableCourseKeel")).Text;
+        //        if ((nameElement == "Manuualtestimise kursus") && (keelElement == "Mantis, Excel"))
+        //        {
+        //            isObjectFound = true;
+        //            break;
+        //        }
+        //    }
+        //    Assert.False(isObjectFound);
+        //    Assert.True(!isObjectFound);
+        //}
 
         /// <summary>
         /// Test which removes a specific previously added object
