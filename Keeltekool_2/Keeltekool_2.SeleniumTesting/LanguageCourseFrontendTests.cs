@@ -177,6 +177,54 @@ namespace Keeltekool_2.SeleniumTesting
         }
 
         //Delete
+        [Fact]
+        public void Should_DeleteLanguageCourse_FromDeleteView()
+        {
+            /* Ülesseade */
+            IWebDriver driver = TestSetup_NavigateToIndex();
+            var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            bool isObjectFound = false;
+
+            /* tegevus */
+            foreach (var row in rowsOfTable)
+            {
+                var nameElement = row.FindElement(By.Id("IndexTableCourseNimetus")).Text;
+                var keelElement = row.FindElement(By.Id("IndexTableCourseKeel")).Text;
+                if ((nameElement == "Manuualtestimise kursus") && (keelElement == "Mantis, Excel"))
+                {
+                    isObjectFound = true;
+                    var clickAction = row;
+                    row.FindElement(By.Id("IndexTableCourseActions"))
+                       .FindElement(By.Id("IndexTableCourseDelete_BTN"))
+                       .Click();
+                    break;
+                }
+            }
+            Thread.Sleep(1000);
+            IWebElement clickDelete = driver.FindElement(By.Id("DeleteDelete_BTN"));
+            clickDelete.Click();
+
+            //kontroll
+            isObjectFound = false;
+            tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            foreach (var row in rowsOfTable)
+            {
+                var nameElement = row.FindElement(By.Id("IndexTableCourseNimetus")).Text;
+                var keelElement = row.FindElement(By.Id("IndexTableCourseKeel")).Text;
+                if ((nameElement == "Manuualtestimise kursus") && (keelElement == "Mantis, Excel"))
+                {
+                    isObjectFound = true;
+                    break;
+                }
+            }
+            Assert.False(isObjectFound);
+            Assert.True(!isObjectFound);
+        }
+
 
         public void DataEntry_LanguageCourse(IWebDriver driver, bool isOneOrTwo = false)
         {
