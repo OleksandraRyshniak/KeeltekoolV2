@@ -2,18 +2,19 @@
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Xunit;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Text;
 using System.Threading;
-using Xunit.Sdk;
+using Xunit;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace Keeltekool_2.SeleniumTesting
 {
     public class OrderAttribute: Attribute
     {
-        public int Value { get; } //värtus
+        public int Value { get; set; } //värtus
         public OrderAttribute(int value) //omistuskonstruktor
         {
             Value = value;
@@ -49,9 +50,13 @@ namespace Keeltekool_2.SeleniumTesting
     [TestCaseOrderer("Keeltekool_2.SeleniumTesting.PriorityOrderer", "Keeltekool_2.SeleniumTesting")]
     public class LanguageCourseFrontendTests
     {
-        public string thisRunGuid { get; set; }
+        public static string thisRunGuid { get; set; }
+
+        /// <summary>
+        /// Test which creates a new object
+        /// </summary>
         [Fact]
-        [Order(1)]
+        [Order(100)]
         public void Should_NavigateToIndex_AddLanguageWithCorrectData_ReturnToIndex()
         {
             //Ülesseade
@@ -79,6 +84,9 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.True(LanguageCourseNameData == "Automaattestimise kursus" && LanguageCourseKeelData == "C# + Selenium & xUnit");
         }
 
+        /// <summary>
+        /// Test which creates a new object, holding a unique id in the "Name" field
+        /// </summary>
         [Fact]
         [Order(5)]
         public void Should_NavigateToIndex_AddLanguageCourseWithUniqueData_ReturnToIndex()
@@ -99,8 +107,21 @@ namespace Keeltekool_2.SeleniumTesting
             /* kontroll */
 
             //kogume andmed
-            string LanguageCourseNameData = driver.FindElement(By.Id("IndexTableCourseNimetus")).Text;
-            string LanguageCourseKeelData = driver.FindElement(By.Id("IndexTableCourseKeel")).Text;
+            var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            bool isObjectFound = false;
+            string LanguageCourseNameData = "";
+            string LanguageCourseKeelData = "";
+            foreach (var row in rowsOfTable)
+            {
+                if (row.FindElement(By.Id("IndexTableCourseNimetus")).Text == thisRunGuid)
+                {
+                    LanguageCourseNameData = thisRunGuid;
+                    LanguageCourseKeelData = row.FindElement(By.Id("IndexTableCourseKeel")).Text;
+                }
+            }
+
             //sulgeme akna
             Thread.Sleep(500);
             driver.Quit();
@@ -109,9 +130,14 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.Equal("C# + Selenium & xUnit", LanguageCourseKeelData);
             Assert.True((uniqueId == LanguageCourseNameData) && ("C# + Selenium & xUnit" == LanguageCourseKeelData));
         }
+
         //siia vaja details (READ) test
+
+        /// <summary>
+        /// Test to navigate to the details page of an object.
+        /// </summary>
         [Fact]
-        [Order(2)]
+        [Order(200)]
         public void Should_NavigateToDetailsOfLanguageCourse_WithPreviouslyCorrectData()
         {
             //ülesseade
@@ -168,6 +194,9 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.Equal("C# + Selenium & xUnit", details_keel);
         }
 
+        /// <summary>
+        /// Test which navigates to the details of a previously added specific object
+        /// </summary>
         [Fact]
         [Order(6)]
         public void Should_NavigateToDetailsOfALanguageCourse_WithPreviouslyUniqueData()
@@ -220,9 +249,15 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.True(int.Parse(details_tase) > -1);
 
         }
+
+
         //vaja teha uuenduse test (UPDATE)
+
+        /// <summary>
+        /// Test which updates an object with new data
+        /// </summary>
         [Fact]
-        [Order(3)]
+        [Order(300)]
         public void Should_UpdateDetailsOfLanguageCourse_WithNewData()
         {
             /* Ülesseade */
@@ -290,6 +325,9 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.Equal("Kursusel õpime mis on manuaaltestimine.", details_kirjeldus);
         }
 
+        /// <summary>
+        /// Test which updates a specific previously added object with new data
+        /// </summary>
         [Fact]
         [Order(7)]
         public void Should_UpdateDetailsOfUniqueLanguageCourse_WithNewData()
@@ -363,10 +401,12 @@ namespace Keeltekool_2.SeleniumTesting
                     "backendi ja frontendi automaatteste.", details_tase);
         }
 
-
         //Delete
+        /// <summary>
+        /// Test which removes an object
+        /// </summary>
         [Fact]
-        [Order(4)]
+        [Order(400)]
         public void Should_DeleteLanguageCourse_FromDeleteView()
         {
             /* Ülesseade */
@@ -414,7 +454,9 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.True(!isObjectFound);
         }
 
-
+        /// <summary>
+        /// Test which removes a specific previously added object
+        /// </summary>
         [Fact]
         [Order(8)]
         public void Should_DeleteUniqueLanguageCourse_FromDeleteView()
@@ -461,12 +503,53 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.False(isObjectFound);
             Assert.True(!isObjectFound);
         }
+
+        //eof
+
+        /// <summary>
+        /// Puhastab andmeväljad meetodile kaasaantud draiveri sessioonis
+        /// </summary>
+        /// <param name="driver">Hetkel käsitletav draiver</param>
+        private void DataClear_CreateUpdate(IWebDriver driver)
+        {
+            IWebElement createEntryNimetus = driver.FindElement(By.Id("CU_LanguageCourse_Nimetus"));
+            createEntryNimetus.Clear();
+            IWebElement createEntryKeel = driver.FindElement(By.Id("CU_LanguageCourse_Keel"));
+            createEntryKeel.Clear();
+            IWebElement createEntryTase = driver.FindElement(By.Id("CU_LanguageCourse_Tase"));
+            createEntryTase.Clear();
+            IWebElement createEntryKirjeldus = driver.FindElement(By.Id("CU_LanguageCourse_Kirjeldus"));
+            createEntryKirjeldus.Clear();
+        }
+
+        /// <summary>
+        /// Puhastab andmeväljad meetodile kaasaantud draiveri sessioonis
+        /// välja arvatud nime väli
+        /// </summary>
+        /// <param name="driver">Hetkel käsitletav draiver</param>
+        private void DataClear_CreateUpdate_SaveName(IWebDriver driver)
+        {
+            IWebElement createEntryKeel = driver.FindElement(By.Id("CU_LanguageCourse_Keel"));
+            createEntryKeel.Clear();
+            IWebElement createEntryTase = driver.FindElement(By.Id("CU_LanguageCourse_Tase"));
+            createEntryTase.Clear();
+            IWebElement createEntryKirjeldus = driver.FindElement(By.Id("CU_LanguageCourse_Kirjeldus"));
+            createEntryKirjeldus.Clear();
+        }
+       
+        /// <summary>
+        /// Meetod mis testimise eesmärgil sisestab lehel andmeid, on võimalik konfigureerida.
+        /// </summary>
+        /// <param name="driver">WebDriver mida hetkel test rakendab</param>
+        /// <param name="isOneOrTwo">Muutuja mis valib kahe erineva andmekomplekti vahel</param>
+        /// <param name="updateName">Muutuja mis ütleb kas nime on vaja muuta (nimes hoitakse testimiseks vajalikku unikaalset Guidi)</param>
+        /// <returns>Tagastab lisatud Guidi stringi kujul mis pandi nimevälja (Kui on konfigureeritud nii)</returns>
         public string DataEntry_LanguageCourse(IWebDriver driver, bool isOneOrTwo = false, bool updateName = true)
         {
-            string generatedId = string.Empty;
+            Guid generatedId = Guid.NewGuid();
             if (updateName)
             {
-                generatedId = Guid.NewGuid().ToString();
+                
                 IWebElement createEntryNimetus = driver.FindElement(By.Id("CU_LanguageCourse_Nimetus"));
                 createEntryNimetus.SendKeys(generatedId.ToString());
             }
@@ -492,9 +575,10 @@ namespace Keeltekool_2.SeleniumTesting
             return generatedId.ToString();
         }
 
-
- 
-
+        /// <summary>
+        /// Ülesseade meetod mis tekitab draiveri, navigeerib aadressile ja vajutab Keeltekursuste lingile.
+        /// </summary>
+        /// <returns>Tagastab testisiseselt kasutatava draiveri</returns>
         private static IWebDriver TestSetup_NavigateToIndex()
         {
             var options = new ChromeOptions { AcceptInsecureCertificates = true };
@@ -504,27 +588,6 @@ namespace Keeltekool_2.SeleniumTesting
             IWebElement navigateToLanguageCourse = driver.FindElement(By.LinkText("Keelekursused"));//otsime tesitava osa lingi
             navigateToLanguageCourse.Click();//simuleeritud tegevus elemendiga, antud juhul klikk
             return driver;
-        }
-
-        private void DataClear_CreateUpdate(IWebDriver driver)
-        {
-            IWebElement createEntryNimetus = driver.FindElement(By.Id("CU_LanguageCourse_Nimetus"));
-            createEntryNimetus.Clear();
-            IWebElement createEntryKeel = driver.FindElement(By.Id("CU_LanguageCourse_Keel"));
-            createEntryKeel.Clear();
-            IWebElement createEntryTase = driver.FindElement(By.Id("CU_LanguageCourse_Tase"));
-            createEntryTase.Clear();
-            IWebElement createEntryKirjeldus = driver.FindElement(By.Id("CU_LanguageCourse_Kirjeldus"));
-            createEntryKirjeldus.Clear();
-        }
-        private void DataClear_CreateUpdate_SaveName(IWebDriver driver)
-        {
-            IWebElement createEntryKeel = driver.FindElement(By.Id("CU_LanguageCourse_Keel"));
-            createEntryKeel.Clear();
-            IWebElement createEntryTase = driver.FindElement(By.Id("CU_LanguageCourse_Tase"));
-            createEntryTase.Clear();
-            IWebElement createEntryKirjeldus = driver.FindElement(By.Id("CU_LanguageCourse_Kirjeldus"));
-            createEntryKirjeldus.Clear();
         }
     }
 }
