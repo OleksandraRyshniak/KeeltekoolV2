@@ -2,5 +2,9 @@
   <Project Path="../Keeltekool_2.ApplicationServices/Keeltekool_2.ApplicationServices.csproj" />
   <Project Path="../Keeltekool_2.Core/Keeltekool_2.Core.csproj" />
   <Project Path="../Keeltekool_2.Data/Keeltekool_2.Data.csproj" />
+  <Project Path="../Keeltekool_2.xUnitTesting/Keeltekool_2.xUnitTesting.csproj" Id="43327d3d-3720-4db4-8eda-32c52c8f2128">
+    <Build Solution="Debug|*" Project="false" />
+  </Project>
+  <Project Path="Keeltekool_2.SeleniumTesting/Keeltekool_2.SeleniumTesting.csproj" Id="a1e1213a-c3b8-4088-9edd-04b685356152" />
   <Project Path="Keeltekool_2/Keeltekool_2.csproj" />
 </Solution>
