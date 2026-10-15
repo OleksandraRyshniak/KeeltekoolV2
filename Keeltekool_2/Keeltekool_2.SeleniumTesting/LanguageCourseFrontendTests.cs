@@ -6,12 +6,51 @@ using System.Text;
 using Xunit;
 using System.Linq;
 using System.Threading;
+using Xunit.Sdk;
+using Xunit.Abstractions;
 
 namespace Keeltekool_2.SeleniumTesting
 {
+    public class OrderAttribute: Attribute
+    {
+        public int Value { get; } //värtus
+        public OrderAttribute(int value) //omistuskonstruktor
+        {
+            Value = value;
+        }
+    }
+
+    public class PriorityOrderer : ITestCaseOrderer
+    {
+        //method võtab sisse kõik test cased
+        public IEnumerable<TTestCase> OrderTestCases<TTestCase>(IEnumerable<TTestCase> testCases) where TTestCase : ITestCase
+        {
+            //toimub sorteerimistegevus kus järjestatakse arendaja kirjutatud järjesti järgi.
+            var result = testCases.OrderBy(test =>
+            {
+                //otsitakse järjesti omadusena
+                var method = test.TestMethod.Method.GetCustomAttributes(typeof(OrderAttribute)).FirstOrDefault();
+                //kui ei leita
+                if (method == null)
+                {
+                    //antakse tagasi maksimaalne täisarv, ehk test teostatakse kohe, ega ei panda teiste potensiaalselt ÕIGES
+                    //järjekorras ovelate testide vahele
+                    return int.MaxValue;
+                }
+                //kui leitakse
+                else
+                {
+                    return method.GetNamedArgument<int>(nameof(OrderAttribute.Value));
+                }
+            }).ToList();
+            return result;
+        }
+    }
+    [TestCaseOrderer("Keeltekool_2.SeleniumTesting.PriorityOrderer", "Keeltekool_2.SeleniumTesting")]
     public class LanguageCourseFrontendTests
     {
         [Fact]
+        [Order(1)]
         public void Should_NavigateToIndex_AddLanguageWithCorrectData_ReturnToIndex()
         {
             //Ülesseade
@@ -40,6 +79,7 @@ namespace Keeltekool_2.SeleniumTesting
         }
         //siia vaja details (READ) test
         [Fact]
+        [Order(2)]
         public void Should_NavigateToDetailsOfLanguageCourse_WithPreviouslyCorrectData()
         {
             //ülesseade
@@ -97,6 +137,7 @@ namespace Keeltekool_2.SeleniumTesting
         }
         //vaja teha uuenduse test (UPDATE)
         [Fact]
+        [Order(3)]
         public void Should_UpdateDetailsOfLanguageCourse_WithNewData()
         {
             /* Ülesseade */
@@ -178,6 +219,7 @@ namespace Keeltekool_2.SeleniumTesting
 
         //Delete
         [Fact]
+        [Order(4)]
         public void Should_DeleteLanguageCourse_FromDeleteView()
         {
             /* Ülesseade */
