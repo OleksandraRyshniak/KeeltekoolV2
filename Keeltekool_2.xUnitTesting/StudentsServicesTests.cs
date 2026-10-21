@@ -87,5 +87,28 @@ namespace Keeltekool_2.xUnitTesting
             Assert.NotEqual(dto.FirstName, result.FirstName);
             Assert.NotEqual(dto.LastName, result.LastName);
         }
+
+        [Fact]
+        public  async Task Should_DeleteStudent_WhenValidGiven()
+        {
+            //ülesseade
+            StudentDTO dto = new StudentDTO();
+            dto.FirstName = "Test";
+            dto.LastName = "Student";
+
+            var student = await Svc<IStudentsServices>().Create(dto);
+
+            //tegevus
+            var result = await Svc<IStudentsServices>().Delete(student.Id);
+            var deletedStudent = await Svc<IStudentsServices>().DetailAsync(student.Id);
+
+            //kontroll
+            Assert.NotNull(result);
+            Assert.Equal(student.Id, result.Id);
+            Assert.Equal(student.FirstName, result.FirstName);
+            Assert.Equal(student.LastName, result.LastName);
+            Assert.Null(deletedStudent);
+            Assert.NotEqual(Guid.Empty, result.Id);
+        }
     }
 }
