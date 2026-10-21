@@ -1,7 +1,10 @@
-﻿using Keeltekool_2.Core.DTO;
+﻿using Keeltekool_2.ApplicationServices.Services;
+using Keeltekool_2.Core.Domain;
+using Keeltekool_2.Core.DTO;
 using Keeltekool_2.Core.ServiceInterface;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using Xunit;
 
@@ -47,7 +50,7 @@ namespace Keeltekool_2.xUnitTesting
             var student = await Svc<IStudentsServices>().Create(dto);
 
             //tegevus
-            var result = await Svc<IStudentServices>().DetailAsync(student.Id);
+            var result = await Svc<IStudentsServices>().DetailAsync(student.Id);
 
             //kontroll
             //kontrollime et tagastati midagi
@@ -56,6 +59,33 @@ namespace Keeltekool_2.xUnitTesting
             Assert.Equal(dto.FirstName, result.FirstName);
             Assert.Equal(dto.LastName, result.LastName);
             Assert.Equal(student.Id, result.Id);
+        }
+
+        [Fact]
+        public async Task Should_UpdateWithNewData_WhenDataIsDiffrentFromDB()
+        {
+            // ülesseade
+            StudentDTO dto = new StudentDTO();
+            dto.FirstName = "Test";
+            dto.LastName = "Student";
+
+            var student = await Svc<IStudentsServices>().Create(dto);
+
+            StudentDTO updateDto = new StudentDTO();
+            updateDto.Id = student.Id;
+            updateDto.FirstName = "Anna";
+            updateDto.LastName = "Smith";
+
+            // tegevus
+            var result = await Svc<IStudentsServices>().Update(updateDto);
+
+            //kontroll
+            Assert.NotNull(result);
+            Assert.Equal(student.Id, result.Id);
+            Assert.Equal("Anna", result.FirstName);
+            Assert.Equal("Smith", result.LastName);
+            Assert.NotEqual(dto.FirstName, result.FirstName);
+            Assert.NotEqual(dto.LastName, result.LastName);
         }
     }
 }
