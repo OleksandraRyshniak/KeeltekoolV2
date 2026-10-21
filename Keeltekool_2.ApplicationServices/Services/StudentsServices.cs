@@ -2,6 +2,7 @@
 using Keeltekool_2.Core.DTO;
 using Keeltekool_2.Core.ServiceInterface;
 using Keeltekool_2.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -55,7 +56,10 @@ namespace Keeltekool_2.ApplicationServices.Services
 
         public async Task<Student> DetailAsync(Guid id)
         {
-            throw new NotImplementedException();
+            //otsime tudengi ID järgi
+            var result = await _context.Students
+                .FirstOrDefaultAsync(x => x.Id == id);
+            return result;
         }
 
         public async Task<Student> Update(StudentDTO dto)
