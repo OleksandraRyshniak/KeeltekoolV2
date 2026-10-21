@@ -110,6 +110,21 @@ namespace Keeltekool_2.xUnitTesting
             Assert.Null(deletedStudent);
             Assert.NotEqual(Guid.Empty, result.Id);
         }
-        
+        [Fact]
+        public async Task Should_ReturnNull_WhenStudentDoesNotExist()
+        {
+            //ülesseade
+            Guid id = Guid.NewGuid();
+
+            //tegevus
+            var result = await Svc<IStudentsServices>().DetailAsync(id);
+
+            //kontroll
+            Assert.Null(result);
+            Assert.NotEqual(Guid.Empty, id);
+            Assert.True(id != Guid.Empty);
+            Assert.False(result is Student);
+            Assert.IsNotType<Student>(result);
+        }
     }
 }
