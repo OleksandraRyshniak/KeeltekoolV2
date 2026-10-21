@@ -35,5 +35,27 @@ namespace Keeltekool_2.xUnitTesting
             Assert.True(result.CreatedAt <= DateTime.Now);
             Assert.True(result.ModifiedAt <= DateTime.Now);
         }
+
+        [Fact]
+        public async Task Should_ReturnStudentDetails_WhenGuidIsNotNull()
+        {
+            //ülesseade
+            StudentDTO dto = new StudentDTO();
+            dto.FirstName = "Test";
+            dto.LastName = "Test";
+
+            var student = await Svc<IStudentsServices>().Create(dto);
+
+            //tegevus
+            var result = await Svc<IStudentServices>().DetailAsync(student.Id);
+
+            //kontroll
+            //kontrollime et tagastati midagi
+            Assert.NotNull(result);
+            Assert.NotEqual(Guid.Empty, result.Id);
+            Assert.Equal(dto.FirstName, result.FirstName);
+            Assert.Equal(dto.LastName, result.LastName);
+            Assert.Equal(student.Id, result.Id);
+        }
     }
 }
