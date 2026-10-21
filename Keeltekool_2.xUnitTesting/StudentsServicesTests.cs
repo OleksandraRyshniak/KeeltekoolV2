@@ -21,7 +21,19 @@ namespace Keeltekool_2.xUnitTesting
             var result = await Svc<IStudentsServices>().Create(dto);
 
             //kontroll
+            //kontrollime et tagastati midagi
             Assert.NotNull(result);
+
+            //kontrollime et id ei ole tühi
+            Assert.NotEqual(Guid.Empty, result.Id);
+
+            //kontrollime et nimi on sama
+            Assert.Equal(dto.FirstName, result.FirstName);
+            Assert.Equal(dto.LastName, result.LastName);
+
+            //kontrollime kuupäevi
+            Assert.True(result.CreatedAt <= DateTime.Now);
+            Assert.True(result.ModifiedAt <= DateTime.Now);
         }
     }
 }
