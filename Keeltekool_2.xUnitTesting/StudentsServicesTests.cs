@@ -1,4 +1,5 @@
 ﻿using Keeltekool_2.Core.DTO;
+using Keeltekool_2.Core.ServiceInterface;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Keeltekool_2.xUnitTesting
             dto.LastName = "Test";
 
             //tegevus
-            var result = await Svc<IStudentsService>().Create(dto);
+            var result = await Svc<IStudentsServices>().Create(dto);
 
             //kontroll
             Assert.NotNull(result);
