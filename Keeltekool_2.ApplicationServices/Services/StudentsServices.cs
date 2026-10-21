@@ -64,7 +64,25 @@ namespace Keeltekool_2.ApplicationServices.Services
 
         public async Task<Student> Update(StudentDTO dto)
         {
-            throw new NotImplementedException();
+            // Otsime tudengi ID järgi
+            var student = await _context.Students
+                .FirstOrDefaultAsync(x => x.Id == dto.Id);
+
+            if (student == null)
+            {
+                return null;
+            }
+
+            // Muudame tudengi andmeid
+            student.FirstName = dto.FirstName;
+            student.LastName = dto.LastName;
+            student.UserID = dto.UserID;
+            student.ModifiedAt = DateTime.Now;
+
+            // Salvestame muudatused
+            await _context.SaveChangesAsync();
+
+            return student;
         }
     }
 }
