@@ -51,7 +51,20 @@ namespace Keeltekool_2.ApplicationServices.Services
 
         public async Task<Student> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            //otsime tudengi ID järgi
+            var student = await _context.Students
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (student == null)
+            {
+                return null;
+            }
+
+            //Kustutame tudengi
+            _context.Students.Remove(student);
+            //Salvestame muudatused
+            await _context.SaveChangesAsync();
+            return student;
         }
 
         public async Task<Student> DetailAsync(Guid id)
