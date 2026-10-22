@@ -178,5 +178,25 @@ namespace Keeltekool_2.xUnitTesting
             Assert.Equal(dto.LastName, existingStudent.LastName);
             Assert.NotEqual(student.Id, updateDto.Id);
         }
+
+        [Fact]
+        public async Task Should_AddNewStudent_WhenFieldsAreEmpty()
+        {
+            //ülesseade
+            StudentDTO dto = new StudentDTO();
+            dto.FirstName = "";
+            dto.LastName = "";
+
+            //tegevus
+            var result = await Svc<IStudentsServices>().Create(dto);
+
+            //kontroll
+            Assert.NotNull(result);
+            Assert.NotEqual(Guid.Empty, result.Id);
+            Assert.Equal("Alex", result.FirstName);
+            Assert.Equal("Doe", result.LastName);
+            Assert.NotEqual("", result.FirstName);
+            Assert.NotEqual("", result.LastName);
+        }
     }
 }
