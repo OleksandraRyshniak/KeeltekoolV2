@@ -150,5 +150,33 @@ namespace Keeltekool_2.xUnitTesting
             Assert.Equal(dto.LastName, existingStudent.LastName);
             Assert.NotEqual(student.Id, wrongId);
         }
+
+        [Fact]
+        public async Task Should_ReturnNull_WhenUpdatingNonexistenStudent()
+        {
+            //ülesseade
+            StudentDTO dto = new StudentDTO();
+            dto.FirstName = "Test";
+            dto.LastName = "Student";
+
+            var student = await Svc<IStudentsServices>().Create(dto);
+
+            StudentDTO updateDto = new StudentDTO();
+            updateDto.Id = Guid.NewGuid();
+            updateDto.FirstName = "Anna";
+            updateDto.LastName = "Smith";
+
+            //tegevus
+            var result = await Svc<IStudentsServices>().Update(updateDto);
+            var existingStudent = await Svc<IStudentsServices>().DetailAsync(student.Id);
+
+            //kontroll
+            Assert.Null(result);
+            Assert.NotNull(existingStudent);
+            Assert.Equal(student.Id, existingStudent.Id);
+            Assert.Equal(dto.FirstName, existingStudent.FirstName);
+            Assert.Equal(dto.LastName, existingStudent.LastName);
+            Assert.NotEqual(student.Id, updateDto.Id);
+        }
     }
 }
