@@ -126,5 +126,29 @@ namespace Keeltekool_2.xUnitTesting
             Assert.False(result is Student);
             Assert.IsNotType<Student>(result);
         }
+
+        [Fact]
+        public async Task Should_ReturnNull_WhenDeletingNonexistenStudent()
+        {
+            //ülesseade
+            StudentDTO dto = new StudentDTO();
+            dto.FirstName = "Test";
+            dto.LastName = "Student";
+
+            var student = await Svc<IStudentsServices>().Create(dto);
+            Guid wrongId = Guid.NewGuid();
+
+            //tegevus
+            var result = await Svc<IStudentsServices>().Delete(wrongId);
+            var existingStudent = await Svc<IStudentsServices>().DetailAsync(student.Id);
+
+            //kontroll
+            Assert.Null(result);
+            Assert.NotNull(existingStudent);
+            Assert.Equal(student.Id, existingStudent.Id);
+            Assert.Equal(dto.FirstName, existingStudent.FirstName);
+            Assert.Equal(dto.LastName, existingStudent.LastName);
+            Assert.NotEqual(student.Id, wrongId);
+        }
     }
 }
