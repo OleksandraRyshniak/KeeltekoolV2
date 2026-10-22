@@ -198,5 +198,35 @@ namespace Keeltekool_2.xUnitTesting
             Assert.NotEqual("", result.FirstName);
             Assert.NotEqual("", result.LastName);
         }
+
+
+        [Fact]
+        public async Task Should_KeepCreatedAt_WhenStudentIsUpdated()
+        {
+            //ülesseade
+            StudentDTO dto = new StudentDTO();
+            dto.FirstName = "Alex";
+            dto.LastName = "Doe";
+
+            var student = await Svc<IStudentsServices>().Create(dto);
+            var createdAt = student.CreatedAt;
+
+            StudentDTO updateDto = new StudentDTO();
+            updateDto.Id = student.Id;
+            updateDto.FirstName = "Anna";
+            updateDto.LastName = "Smith";
+
+            //tegevus
+            var result = await Svc<IStudentsServices>().Update(updateDto);
+
+            //kontroll
+            Assert.NotNull(result);
+            Assert.Equal(student.Id, result.Id);
+            Assert.Equal(createdAt, result.CreatedAt);
+            Assert.Equal("Anna", result.FirstName);
+            Assert.Equal("Smith", result.LastName);
+            Assert.NotEqual(Guid.Empty, result.Id);
+        }
+
     }
 }
