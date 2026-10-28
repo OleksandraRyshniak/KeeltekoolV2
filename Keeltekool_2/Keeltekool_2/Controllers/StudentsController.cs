@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Keeltekool_2.Data;
 using Keeltekool_2.Models.Students;
+using Keeltekool_2.Core.DTO;
 
 namespace Keeltekool_2.Controllers
 {
@@ -31,5 +32,35 @@ namespace Keeltekool_2.Controllers
                 .OrderBy(x => x.LastName);
             return View(result);
         }
+
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(StudentCreateViewModel vm)
+        {
+            //kontrollime sisestatud andmeid
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+
+            //loome uue tudengi
+            StudentDTO dto = new StudentDTO();
+            dto.FirstName = vm.FirstName;
+            dto.LastName = vm.LastName;
+            dto.UserID = vm.UserID;
+
+            await _studentsServices.Create(dto);
+
+            //suuname tagasi nimekirja
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
