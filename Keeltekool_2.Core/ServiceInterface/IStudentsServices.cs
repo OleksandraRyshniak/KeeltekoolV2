@@ -12,5 +12,6 @@ namespace Keeltekool_2.Core.ServiceInterface
         Task<Student> Update(StudentDTO dto);
         Task<Student> DetailAsync(Guid id);
         Task<Student> Delete(Guid id);
+        
     }
 }
