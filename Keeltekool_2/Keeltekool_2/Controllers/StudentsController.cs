@@ -90,5 +90,71 @@ namespace Keeltekool_2.Controllers
             return View(vm);
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> Update(Guid id)
+        {
+            //otsime tudengi
+            var student = await _studentsServices.DetailAsync(id);
+
+            //kontrollime, kas tudeng on olemas
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            //valmistame andmed ette
+            var vm = new StudentUpdateViewModel
+            {
+                Id = student.Id,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                UserID = student.UserID
+            };
+
+            return View(vm);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(Guid id, StudentUpdateViewModel vm)
+        {
+            //kontrollime ID-d
+            if (id != vm.Id)
+            {
+                return BadRequest();
+            }
+
+            //kontrollime sisestatud andmeid
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+
+            //otsime tudengi
+            var student = await _studentsServices.DetailAsync(id);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            //uuendame tudengi andmeid
+            StudentDTO dto = new StudentDTO
+            {
+                Id = vm.Id,
+                FirstName = vm.FirstName,
+                LastName = vm.LastName,
+                UserID = vm.UserID,
+                CreatedAt = student.CreatedAt
+            };
+
+            await _studentsServices.Update(dto);
+
+            //suuname tagasi nimekirja
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
