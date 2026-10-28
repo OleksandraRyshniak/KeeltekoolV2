@@ -62,5 +62,33 @@ namespace Keeltekool_2.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            //otsime tudengi
+            var student = await _studentsServices.DetailAsync(id);
+
+            //kontrollime, kas tudeng on olemas
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            //valmistame andmed ette
+            var vm = new StudentDetailsViewModel
+            {
+                Id = student.Id,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                UserID = student.UserID,
+                CreatedAt = student.CreatedAt,
+                ModifiedAt = student.ModifiedAt
+            };
+
+            return View(vm);
+        }
+
     }
 }
