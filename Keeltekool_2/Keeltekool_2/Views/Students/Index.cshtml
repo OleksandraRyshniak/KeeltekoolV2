@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Keeltekool_2.Models.Students.StudentIndexViewModel>
+
+@{
+    ViewData["Title"] = "Õpilased";
+}
+
+<h1>Õpilased</h1>
+
+<p>
+    <a asp-action="Create">Lisa uus õpilane</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Eesnimi</th>
+            <th>Perekonnanimi</th>
+            <th>Kasutaja ID</th>
+            <th>Tegevused</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.UserID</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Vaata</a>
+                    <a asp-action="Update" asp-route-id="@item.Id">Muuda</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Kustuta</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
