@@ -12,6 +12,11 @@ namespace Keeltekool_2.xUnitTesting
 {
     public class StudentsServicesTests : TestBase
     {
+
+        /// <summary>
+        /// Kontrollib, kas uue õpilase loomine õnnestub
+        /// ja kas loodud õpilase andmed on õiged.
+        /// </summary>
         [Fact]
         public async Task Should_AddNewStudent_WhenResultIsReturned()
         {
@@ -39,6 +44,10 @@ namespace Keeltekool_2.xUnitTesting
             Assert.True(result.ModifiedAt <= DateTime.Now);
         }
 
+        /// <summary>
+        /// Kontrollib, kas olemasoleva õpilase andmed
+        /// leitakse ja tagastatakse õige ID alusel.
+        /// </summary>
         [Fact]
         public async Task Should_ReturnStudentDetails_WhenGuidIsNotNull()
         {
@@ -61,6 +70,11 @@ namespace Keeltekool_2.xUnitTesting
             Assert.Equal(student.Id, result.Id);
         }
 
+
+        /// <summary>
+        /// Kontrollib, kas õpilase eesnime ja perekonnanime
+        /// saab muuta ning kas uued andmed tagastatakse õigesti.
+        /// </summary>
         [Fact]
         public async Task Should_UpdateWithNewData_WhenDataIsDiffrentFromDB()
         {
@@ -88,6 +102,10 @@ namespace Keeltekool_2.xUnitTesting
             Assert.NotEqual(dto.LastName, result.LastName);
         }
 
+        /// <summary>
+        /// Kontrollib, kas olemasoleva õpilase kustutamine õnnestub
+        /// ja kas kustutatud õpilast enam andmebaasist ei leita.
+        /// </summary>
         [Fact]
         public  async Task Should_DeleteStudent_WhenValidGiven()
         {
@@ -110,6 +128,12 @@ namespace Keeltekool_2.xUnitTesting
             Assert.Null(deletedStudent);
             Assert.NotEqual(Guid.Empty, result.Id);
         }
+
+        /// <summary>
+        /// Kontrollib, kas olematu õpilase otsimisel
+        /// tagastatakse null.
+        /// </summary
+        /// >
         [Fact]
         public async Task Should_ReturnNull_WhenStudentDoesNotExist()
         {
@@ -127,6 +151,11 @@ namespace Keeltekool_2.xUnitTesting
             Assert.IsNotType<Student>(result);
         }
 
+
+        /// <summary>
+        /// Kontrollib, kas olematu õpilase kustutamisel tagastatakse null
+        /// ja olemasoleva õpilase andmed jäävad muutmata.
+        /// </summary>
         [Fact]
         public async Task Should_ReturnNull_WhenDeletingNonexistenStudent()
         {
@@ -151,6 +180,10 @@ namespace Keeltekool_2.xUnitTesting
             Assert.NotEqual(student.Id, wrongId);
         }
 
+        /// <summary>
+        /// Kontrollib, kas olematu õpilase muutmisel tagastatakse null
+        /// ja olemasoleva õpilase andmed jäävad muutmata.
+        /// </summary>
         [Fact]
         public async Task Should_ReturnNull_WhenUpdatingNonexistenStudent()
         {
@@ -179,6 +212,10 @@ namespace Keeltekool_2.xUnitTesting
             Assert.NotEqual(student.Id, updateDto.Id);
         }
 
+        /// <summary>
+        /// Kontrollib, kas tühjade nimeväljade korral
+        /// määratakse õpilasele vaikimisi eesnimi ja perekonnanimi.
+        /// </summary>
         [Fact]
         public async Task Should_AddNewStudent_WhenFieldsAreEmpty()
         {
@@ -199,7 +236,10 @@ namespace Keeltekool_2.xUnitTesting
             Assert.NotEqual("", result.LastName);
         }
 
-
+        /// <summary>
+        /// Kontrollib, kas õpilase andmete muutmisel
+        /// jääb algne loomise kuupäev samaks.
+        /// </summary>
         [Fact]
         public async Task Should_KeepCreatedAt_WhenStudentIsUpdated()
         {
