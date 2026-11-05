@@ -132,8 +132,7 @@ namespace Keeltekool_2.xUnitTesting
         /// <summary>
         /// Kontrollib, kas olematu õpilase otsimisel
         /// tagastatakse null.
-        /// </summary
-        /// >
+        /// </summary>
         [Fact]
         public async Task Should_ReturnNull_WhenStudentDoesNotExist()
         {
