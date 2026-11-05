@@ -156,5 +156,53 @@ namespace Keeltekool_2.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            //otsime tudengi
+            var student = await _studentsServices.DetailAsync(id);
+
+            //kontrollime, kas tudeng on olemas
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            //valmistame andmed ette
+            var vm = new StudentDetailsViewModel
+            {
+                Id = student.Id,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                UserID = student.UserID,
+                CreatedAt = student.CreatedAt,
+                ModifiedAt = student.ModifiedAt
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            //kontrollime, kas tudeng on olemas
+            var student = await _studentsServices.DetailAsync(id);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            //kustutame tudengi
+            await _studentsServices.Delete(id);
+
+            //suuname tagasi nimekirja
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
