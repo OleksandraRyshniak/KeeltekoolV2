@@ -1,6 +1,7 @@
 ﻿using Keeltekool_2.Core.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Identity.Client;
 
 namespace Keeltekool_2.Data
@@ -15,5 +16,6 @@ namespace Keeltekool_2.Data
         public DbSet<LanguageCourse> LanguageCourses { get; set; }
         public DbSet<Lecturer> Lecturers { get; set; }
         public DbSet<FileToDatabase> Files { get; set; }
+        public DbSet<Student> Students { get; set; }
     }
 }

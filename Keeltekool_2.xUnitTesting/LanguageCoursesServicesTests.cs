@@ -93,7 +93,9 @@ namespace Keeltekool_2.xUnitTesting
         // 2 - Mida parasjagu testiga testitakse.
         // 3 - Mis tingimustel tulemust kontrollitakse, peale tegevust
         //                  1           2           3
-        //                  \/          \/          \/
+        //
+        // \/          \/          \/
+      
         public async Task Should_UpdateWithNewData_WhenDataIsDiffrentFromDB(LanguageCourseDTO result)
         {
             // ülesseade
