@@ -498,6 +498,100 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.NotEqual("Aavik", lastNameAfterCancel);
         }
 
+        /// <summary>
+        /// Test loob uue õpilase, avab muutmise vormi, tühjendab eesnime välja, muudab perekonnanime
+        /// ja proovib salvestada. Kontrollib, et kasutaja jääb muutmise vaatesse, eesnime juures
+        /// kuvatakse veateade ning õpilase andmed jäävad muutmata (ka perekonnanimi ei salvestu).
+        /// Testi lõpus kustutatakse loodud õpilane.
+        /// </summary>
+        [Fact]
+        [Order(8)]
+        public void Should_ShowValidationError_WhenUpdatingStudentWithEmptyFirstName()
+        {
+            /* Ülesseade */
+            IWebDriver driver = TestSetup_NavigateToIndex();
+            //loome testi jaoks oma õpilase
+            IWebElement indexCreateButton = driver.FindElement(By.Id("IndexCreateNewStudent_BTN"));
+            indexCreateButton.Click();
+            string uniqueId = DataEntry_Student(driver);
+            IWebElement CreateCreateButton = driver.FindElement(By.Id("CU_Create_BTN"));
+            CreateCreateButton.Click();
+            Thread.Sleep(500);
+
+            var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            bool isObjectFound = false;
+
+            /* tegevus */
+            foreach (var row in rowsOfTable)
+            {
+                var firstNameElement = row.FindElement(By.Id("IndexTableStudentFirstName")).Text;
+                if (firstNameElement == uniqueId)
+                {
+                    isObjectFound = true;
+                    var clickAction = row
+                        .FindElement(By.Id("IndexTableStudentActions"))
+                        .FindElement(By.Id("IndexTableStudentUpdate_BTN"));
+                    clickAction.Click();
+                    break;
+                }
+            }
+            Thread.Sleep(500);
+            driver.FindElement(By.Id("CU_Student_FirstName")).Clear(); //tühjendame ainult eesnime
+            IWebElement entryLastName = driver.FindElement(By.Id("CU_Student_LastName"));
+            entryLastName.Clear();
+            entryLastName.SendKeys("Aavik"); //perekonnanimi on korrektne
+            IWebElement updateClick = driver.FindElement(By.Id("CU_Update_BTN"));
+            updateClick.Click();
+            Thread.Sleep(500);
+
+            /* kontroll */
+            //kogume andmed
+            string urlAfterSubmit = driver.Url;
+            string firstNameError = driver.FindElement(By.Id("CU_Student_FirstName_Error")).Text;
+            string lastNameError = driver.FindElement(By.Id("CU_Student_LastName_Error")).Text;
+
+            //läheme tagasi nimekirja ja vaatame, kas andmed jäid samaks
+            IWebElement goBack = driver.FindElement(By.Id("CU_Cancel_BTN"));
+            goBack.Click();
+            Thread.Sleep(1000);
+            bool isStillFound = false;
+            string lastNameAfter = "";
+            string userIdAfter = "";
+            tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            foreach (var row in rowsOfTable)
+            {
+                var firstNameElement = row.FindElement(By.Id("IndexTableStudentFirstName")).Text;
+                if (firstNameElement == uniqueId)
+                {
+                    isStillFound = true;
+                    lastNameAfter = row.FindElement(By.Id("IndexTableStudentLastName")).Text;
+                    userIdAfter = row.FindElement(By.Id("IndexTableStudentUserID")).Text;
+                    //koristame testiandmed - kustutame loodud õpilase
+                    row.FindElement(By.Id("IndexTableStudentActions"))
+                       .FindElement(By.Id("IndexTableStudentDelete_BTN"))
+                       .Click();
+                    driver.FindElement(By.Id("DeleteDelete_BTN")).Click();
+                    break;
+                }
+            }
+
+            //sulgeme akna
+            Thread.Sleep(500);
+            driver.Quit();
+            //assertime
+            Assert.True(isObjectFound);
+            Assert.Contains("/Students/Update", urlAfterSubmit); //jäime muutmise vaatesse
+            Assert.Equal("Eesnimi on kohustuslik", firstNameError);
+            Assert.Empty(lastNameError); //perekonnanimi oli täidetud, seal viga pole
+            Assert.True(isStillFound); //õpilane on alles vana eesnimega
+            Assert.Equal("Automaattest", lastNameAfter); //ka perekonnanimi ei salvestunud
+            Assert.Equal("selenium-test-01", userIdAfter);
+        }
+
         //eof
 
         ///<summary>
