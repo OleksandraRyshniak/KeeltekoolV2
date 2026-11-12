@@ -19,25 +19,25 @@
 
             <div class="form-group mb-3">
                 <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+                <input asp-for="FirstName" class="form-control" id="CU_Student_FirstName"/>
+                <span asp-validation-for="FirstName" class="text-danger" id="CU_Student_FirstName_Error"></span>
             </div>
 
             <div class="form-group mb-3">
                 <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
+                <input asp-for="LastName" class="form-control" id="CU_Student_LastName"/>
+                <span asp-validation-for="LastName" class="text-danger" id="CU_Student_LastName_Error"></span>
             </div>
 
             <div class="form-group mb-3">
                 <label asp-for="UserID" class="control-label"></label>
-                <input asp-for="UserID" class="form-control" />
-                <span asp-validation-for="UserID" class="text-danger"></span>
+                <input asp-for="UserID" class="form-control" id="CU_Student_UserID"/>
+                <span asp-validation-for="UserID" class="text-danger" id="CU_Student_UserID_Error"></span>
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Salvesta muudatused" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Tagasi nimekirja</a>
+                <input type="submit" value="Salvesta muudatused" class="btn btn-primary" id="CU_Update_BTN" />
+                <a asp-action="Index" class="btn btn-secondary" id="CU_Cancel_BTN">Tagasi nimekirja</a>
             </div>
         </form>
     </div>
