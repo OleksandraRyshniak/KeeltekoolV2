@@ -400,6 +400,104 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.Equal("Automaattest", lastNameAfterCancel); //andmed ei muutunud
         }
 
+        /// <summary>
+        /// Test loob uue õpilase, avab muutmise vormi, kirjutab eesnime ja perekonnanime üle
+        /// ning vajutab "Tagasi nimekirja" ilma salvestamata.
+        /// Kontrollib, et muudatusi ei salvestatud: nimekirjas on vana eesnimi ja perekonnanimi
+        /// ning uue eesnimega õpilast ei ole. Testi lõpus kustutatakse loodud õpilane.
+        /// </summary>
+        [Fact]
+        [Order(7)]
+        public void Should_NotSaveChanges_WhenUpdateIsCancelled()
+        {
+            /* Ülesseade */
+            IWebDriver driver = TestSetup_NavigateToIndex();
+            //loome testi jaoks oma õpilase
+            IWebElement indexCreateButton = driver.FindElement(By.Id("IndexCreateNewStudent_BTN"));
+            indexCreateButton.Click();
+            string uniqueId = DataEntry_Student(driver);
+            IWebElement CreateCreateButton = driver.FindElement(By.Id("CU_Create_BTN"));
+            CreateCreateButton.Click();
+            Thread.Sleep(500);
+
+            string changedName = Guid.NewGuid().ToString(); //uus eesnimi, mida ei tohi salvestada
+            var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            bool isObjectFound = false;
+
+            /* tegevus */
+            foreach (var row in rowsOfTable)
+            {
+                var firstNameElement = row.FindElement(By.Id("IndexTableStudentFirstName")).Text;
+                if (firstNameElement == uniqueId)
+                {
+                    isObjectFound = true;
+                    var clickAction = row
+                        .FindElement(By.Id("IndexTableStudentActions"))
+                        .FindElement(By.Id("IndexTableStudentUpdate_BTN"));
+                    clickAction.Click();
+                    break;
+                }
+            }
+            Thread.Sleep(500);
+            DataClear_CreateUpdate(driver); //puhastame kõik väljad
+            driver.FindElement(By.Id("CU_Student_FirstName")).SendKeys(changedName);
+            driver.FindElement(By.Id("CU_Student_LastName")).SendKeys("Aavik");
+            IWebElement goBack = driver.FindElement(By.Id("CU_Cancel_BTN"));
+            goBack.Click(); //lahkume salvestamata
+            Thread.Sleep(1000);
+
+            /* kontroll */
+            //kogume andmed
+            bool isOriginalFound = false;
+            bool isChangedFound = false;
+            string lastNameAfterCancel = "";
+            tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            foreach (var row in rowsOfTable)
+            {
+                var firstNameElement = row.FindElement(By.Id("IndexTableStudentFirstName")).Text;
+                if (firstNameElement == changedName)
+                {
+                    isChangedFound = true;
+                }
+                if (firstNameElement == uniqueId)
+                {
+                    isOriginalFound = true;
+                    lastNameAfterCancel = row.FindElement(By.Id("IndexTableStudentLastName")).Text;
+                }
+            }
+
+            //koristame testiandmed - kustutame loodud õpilase
+            tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            foreach (var row in rowsOfTable)
+            {
+                var firstNameElement = row.FindElement(By.Id("IndexTableStudentFirstName")).Text;
+                if (firstNameElement == uniqueId || firstNameElement == changedName)
+                {
+                    row.FindElement(By.Id("IndexTableStudentActions"))
+                       .FindElement(By.Id("IndexTableStudentDelete_BTN"))
+                       .Click();
+                    driver.FindElement(By.Id("DeleteDelete_BTN")).Click();
+                    break;
+                }
+            }
+
+            //sulgeme akna
+            Thread.Sleep(500);
+            driver.Quit();
+            //assertime
+            Assert.True(isObjectFound);
+            Assert.True(isOriginalFound); //õpilane on alles vana eesnimega
+            Assert.False(isChangedFound); //uue eesnimega õpilast ei ole
+            Assert.Equal("Automaattest", lastNameAfterCancel); //perekonnanimi ei muutunud
+            Assert.NotEqual("Aavik", lastNameAfterCancel);
+        }
+
         //eof
 
         ///<summary>
