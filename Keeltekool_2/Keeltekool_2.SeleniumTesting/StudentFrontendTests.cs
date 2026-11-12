@@ -12,6 +12,59 @@ namespace Keeltekool_2.SeleniumTesting
     {
         public static string thisRunGuid { get; set; }
 
+        /// <summary>
+        /// Test loob uue õpilase, kelle eesnimes on unikaalne Guid.
+        /// Kontrollib, et pärast salvestamist suunatakse tagasi nimekirja ning seal on
+        /// õpilane, kelle eesnimi, perekonnanimi ja kasutaja ID vastavad sisestatud andmetele.
+        /// </summary>
+        [Fact]
+        [Order(1)]
+        public void Should_NavigateToIndex_AddStudentWithUniqueData_ReturnToIndex()
+        {
+            /* Ülesseade */
+            IWebDriver driver = TestSetup_NavigateToIndex();
+
+            /* tegevus */
+            IWebElement indexCreateButton = driver.FindElement(By.Id("IndexCreateNewStudent_BTN"));
+            indexCreateButton.Click(); //vajutame loomise nupule
+
+            string uniqueId = DataEntry_Student(driver); //sisestame andmed vormi
+            thisRunGuid = uniqueId;
+
+            IWebElement CreateCreateButton = driver.FindElement(By.Id("CU_Create_BTN"));
+            CreateCreateButton.Click(); //vajutame loomise vaates salvesta nupule
+
+            /* kontroll */
+
+            //kogume andmed
+            var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0); //eemaldame päise rea
+            bool isObjectFound = false;
+            string StudentFirstNameData = "";
+            string StudentLastNameData = "";
+            string StudentUserIdData = "";
+            foreach (var row in rowsOfTable)
+            {
+                if (row.FindElement(By.Id("IndexTableStudentFirstName")).Text == thisRunGuid)
+                {
+                    isObjectFound = true;
+                    StudentFirstNameData = thisRunGuid;
+                    StudentLastNameData = row.FindElement(By.Id("IndexTableStudentLastName")).Text;
+                    StudentUserIdData = row.FindElement(By.Id("IndexTableStudentUserID")).Text;
+                }
+            }
+
+            //sulgeme akna
+            Thread.Sleep(500);
+            driver.Quit();
+            //assertime
+            Assert.True(isObjectFound);
+            Assert.Equal(uniqueId, StudentFirstNameData);
+            Assert.Equal("Automaattest", StudentLastNameData);
+            Assert.Equal("selenium-test-01", StudentUserIdData);
+        }
+
         //eof
 
         ///<summary>
