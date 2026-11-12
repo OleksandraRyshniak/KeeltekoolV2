@@ -323,6 +323,83 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.Equal(rowsBefore, rowsAfter); //uut õpilast ei lisatud
         }
 
+        /// <summary>
+        /// Test loob uue õpilase, avab tema kustutamise vaate ja vajutab "Tagasi nimekirja" (mitte "Kustuta").
+        /// Kontrollib, et kustutamine katkestati: õpilane on endiselt nimekirjas ja tema andmed ei muutunud.
+        /// Testi lõpus kustutatakse loodud õpilane, et andmebaasi ei jääks testiandmeid.
+        /// </summary>
+        [Fact]
+        [Order(6)]
+        public void Should_KeepStudent_WhenDeleteIsCancelled()
+        {
+            /* Ülesseade */
+            IWebDriver driver = TestSetup_NavigateToIndex();
+            //loome testi jaoks oma õpilase
+            IWebElement indexCreateButton = driver.FindElement(By.Id("IndexCreateNewStudent_BTN"));
+            indexCreateButton.Click();
+            string uniqueId = DataEntry_Student(driver);
+            IWebElement CreateCreateButton = driver.FindElement(By.Id("CU_Create_BTN"));
+            CreateCreateButton.Click();
+            Thread.Sleep(500);
+
+            var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            bool isObjectFound = false;
+
+            /* tegevus */
+            foreach (var row in rowsOfTable)
+            {
+                var firstNameElement = row.FindElement(By.Id("IndexTableStudentFirstName")).Text;
+                if (firstNameElement == uniqueId)
+                {
+                    isObjectFound = true;
+                    var clickAction = row
+                        .FindElement(By.Id("IndexTableStudentActions"))
+                        .FindElement(By.Id("IndexTableStudentDelete_BTN"));
+                    clickAction.Click();
+                    break;
+                }
+            }
+            Thread.Sleep(1000);
+            IWebElement goBack = driver.FindElement(By.Id("DeleteBack_BTN"));
+            goBack.Click(); //katkestame kustutamise
+            Thread.Sleep(1000);
+
+            /* kontroll */
+            //kogume andmed
+            string urlAfterCancel = driver.Url;
+            bool isObjectFoundAfterCancel = false;
+            string lastNameAfterCancel = "";
+            tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            foreach (var row in rowsOfTable)
+            {
+                var firstNameElement = row.FindElement(By.Id("IndexTableStudentFirstName")).Text;
+                if (firstNameElement == uniqueId)
+                {
+                    isObjectFoundAfterCancel = true;
+                    lastNameAfterCancel = row.FindElement(By.Id("IndexTableStudentLastName")).Text;
+                    //koristame testiandmed - kustutame loodud õpilase
+                    row.FindElement(By.Id("IndexTableStudentActions"))
+                       .FindElement(By.Id("IndexTableStudentDelete_BTN"))
+                       .Click();
+                    driver.FindElement(By.Id("DeleteDelete_BTN")).Click();
+                    break;
+                }
+            }
+
+            //sulgeme akna
+            Thread.Sleep(500);
+            driver.Quit();
+            //assertime
+            Assert.True(isObjectFound);
+            Assert.DoesNotContain("/Students/Delete", urlAfterCancel); //lahkusime kustutamise vaatest
+            Assert.True(isObjectFoundAfterCancel); //õpilane on endiselt alles
+            Assert.Equal("Automaattest", lastNameAfterCancel); //andmed ei muutunud
+        }
+
         //eof
 
         ///<summary>
