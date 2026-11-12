@@ -124,6 +124,94 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.True(isBackOnIndex);
         }
 
+        /// <summary>
+        /// Test muudab eelnevalt loodud õpilase perekonnanime ja kasutaja ID-d (eesnimi ehk Guid jääb samaks).
+        /// Kontrollib, et nimekirjas ja detailvaates on uued andmed, vanu andmeid enam ei ole
+        /// ning et muutmise kuupäev ei ole loomise kuupäevast varasem.
+        /// </summary>
+        [Fact]
+        [Order(3)]
+        public void Should_UpdateDetailsOfUniqueStudent_WithNewData()
+        {
+            /* Ülesseade */
+            IWebDriver driver = TestSetup_NavigateToIndex();
+            var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            bool isObjectFound = false;
+
+            /* tegevus */
+            foreach (var row in rowsOfTable)
+            {
+                var firstNameElement = row.FindElement(By.Id("IndexTableStudentFirstName")).Text;
+                if (firstNameElement == thisRunGuid)
+                {
+                    isObjectFound = true;
+                    var clickAction = row
+                        .FindElement(By.Id("IndexTableStudentActions"))
+                        .FindElement(By.Id("IndexTableStudentUpdate_BTN"));
+                    clickAction.Click();
+                    break;
+                }
+            }
+            Thread.Sleep(500);
+            DataClear_CreateUpdate_SaveName(driver); //puhastame väljad, eesnimi (Guid) jääb alles
+            DataEntry_Student(driver, true, false); //sisestame andmekomplekti 2
+            IWebElement updateClick = driver.FindElement(By.Id("CU_Update_BTN"));
+            updateClick.Click(); //salvestamise järel suunatakse tagasi nimekirja
+
+            /* kontroll */
+            //otsime muudetud objekti nimekirjast üles
+            Thread.Sleep(1000);
+            tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            bool isUpdatedObjectFound = false;
+            string index_lastName = "";
+            string index_userId = "";
+            foreach (var row in rowsOfTable)
+            {
+                var firstNameElement = row.FindElement(By.Id("IndexTableStudentFirstName")).Text;
+                if (firstNameElement == thisRunGuid)
+                {
+                    isUpdatedObjectFound = true;
+                    index_lastName = row.FindElement(By.Id("IndexTableStudentLastName")).Text;
+                    index_userId = row.FindElement(By.Id("IndexTableStudentUserID")).Text;
+                    var clickAction = row
+                        .FindElement(By.Id("IndexTableStudentActions"))
+                        .FindElement(By.Id("IndexTableStudentDetails_BTN"));
+                    clickAction.Click();
+                    break;
+                }
+            }
+            Thread.Sleep(1000);
+            //leiame andmed detailvaatest
+            string details_firstName = driver.FindElement(By.Id("DD_StudentFirstName")).Text; //unikaalne Guid
+            string details_lastName = driver.FindElement(By.Id("DD_StudentLastName")).Text;
+            string details_userId = driver.FindElement(By.Id("DD_StudentUserID")).Text;
+            string details_createdAt = driver.FindElement(By.Id("DD_StudentCreatedAt")).Text;
+            string details_modifiedAt = driver.FindElement(By.Id("DD_StudentModifiedAt")).Text;
+            Thread.Sleep(1000);
+            driver.Quit();
+
+            Assert.True(isObjectFound);
+            Assert.True(isUpdatedObjectFound);
+            //nimekirjas on uued andmed
+            Assert.Equal("Aavik", index_lastName);
+            Assert.Equal("selenium-test-02", index_userId);
+            //detailvaates on uued andmed
+            Assert.Equal(thisRunGuid, details_firstName);
+            Assert.Equal("Aavik", details_lastName);
+            Assert.Equal("selenium-test-02", details_userId);
+            //vanu andmeid enam ei ole
+            Assert.NotEqual("Automaattest", details_lastName);
+            Assert.NotEqual("selenium-test-01", details_userId);
+            //muutmise kuupäev ei ole loomise kuupäevast varasem
+            DateTime createdAt = DateTime.ParseExact(details_createdAt, "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture);
+            DateTime modifiedAt = DateTime.ParseExact(details_modifiedAt, "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture);
+            Assert.True(modifiedAt >= createdAt);
+        }
+
         //eof
 
         ///<summary>
