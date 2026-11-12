@@ -7,10 +7,10 @@
 <h1>Õpilased</h1>
 
 <p>
-    <a asp-action="Create">Lisa uus õpilane</a>
+    <a asp-action="Create" id="IndexCreateNewStudent_BTN">Lisa uus õpilane</a>
 </p>
 
-<table class="table">
+<table class="table" id="IndexTable">
     <thead>
         <tr>
             <th>Eesnimi</th>
@@ -23,13 +23,13 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.FirstName</td>
-                <td>@item.LastName</td>
-                <td>@item.UserID</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Vaata</a>
-                    <a asp-action="Update" asp-route-id="@item.Id">Muuda</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id">Kustuta</a>
+                <td id="IndexTableStudentFirstName">@item.FirstName</td>
+                <td id="IndexTableStudentLastName">@item.LastName</td>
+                <td id="IndexTableStudentUserID">@item.UserID</td>
+                <td id="IndexTableStudentActions">
+                    <a asp-action="Details" asp-route-id="@item.Id" id="IndexTableStudentDetails_BTN">Vaata</a>
+                    <a asp-action="Update" asp-route-id="@item.Id" id="IndexTableStudentUpdate_BTN">Muuda</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" id="IndexTableStudentDelete_BTN">Kustuta</a>
                 </td>
             </tr>
         }
