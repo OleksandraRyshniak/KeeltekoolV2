@@ -276,6 +276,53 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.True(rowsAfter < rowsBefore || rowsBefore == 20); //ridu jäi vähemaks (kui nimekiri polnud täis)
         }
 
+        /// <summary>
+        /// Test proovib salvestada tühja õpilase vormi.
+        /// Kontrollib, et kasutaja jääb loomise vaatesse, eesnime ja perekonnanime juures
+        /// kuvatakse eestikeelsed veateated ning nimekirja ei lisandu ühtegi uut rida.
+        /// </summary>
+        [Fact]
+        [Order(5)]
+        public void Should_ShowValidationErrors_WhenCreatingStudentWithEmptyFields()
+        {
+            /* Ülesseade */
+            IWebDriver driver = TestSetup_NavigateToIndex();
+            var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            int rowsBefore = rowsOfTable.Count; //ridade arv enne
+
+            /* tegevus */
+            IWebElement indexCreateButton = driver.FindElement(By.Id("IndexCreateNewStudent_BTN"));
+            indexCreateButton.Click(); //avame loomise vaate
+            IWebElement CreateCreateButton = driver.FindElement(By.Id("CU_Create_BTN"));
+            CreateCreateButton.Click(); //vajutame salvesta ilma andmeid sisestamata
+            Thread.Sleep(500);
+
+            /* kontroll */
+            //kogume andmed
+            string urlAfterSubmit = driver.Url;
+            string firstNameError = driver.FindElement(By.Id("CU_Student_FirstName_Error")).Text;
+            string lastNameError = driver.FindElement(By.Id("CU_Student_LastName_Error")).Text;
+
+            //läheme tagasi nimekirja ja loeme read uuesti üle
+            IWebElement goBack = driver.FindElement(By.Id("CU_Cancel_BTN"));
+            goBack.Click();
+            Thread.Sleep(500);
+            tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            int rowsAfter = rowsOfTable.Count; //ridade arv pärast
+
+            //sulgeme akna
+            driver.Quit();
+            //assertime
+            Assert.Contains("/Students/Create", urlAfterSubmit); //jäime loomise vaatesse
+            Assert.Equal("Eesnimi on kohustuslik", firstNameError);
+            Assert.Equal("Perekonnanimi on kohustuslik", lastNameError);
+            Assert.Equal(rowsBefore, rowsAfter); //uut õpilast ei lisatud
+        }
+
         //eof
 
         ///<summary>
