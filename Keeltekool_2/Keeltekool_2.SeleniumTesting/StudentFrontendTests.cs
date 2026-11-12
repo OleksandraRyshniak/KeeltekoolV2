@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
+using System.Globalization;
 
 namespace Keeltekool_2.SeleniumTesting
 {
@@ -63,6 +64,64 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.Equal(uniqueId, StudentFirstNameData);
             Assert.Equal("Automaattest", StudentLastNameData);
             Assert.Equal("selenium-test-01", StudentUserIdData);
+        }
+
+        /// <summary>
+        /// Test avab nimekirjast eelmises testis loodud õpilase detailvaate ("Vaata").
+        /// Kontrollib, et detailvaates on täpselt need andmed, mis loomisel sisestati,
+        /// et loomise ja muutmise kuupäev on kujul pp.kk.aaaa tt:mm
+        /// ning et "Tagasi nimekirja" nupp viib tagasi õpilaste nimekirja.
+        /// </summary>
+        [Fact]
+        [Order(2)]
+        public void Should_NavigateToDetailsOfAStudent_WithPreviouslyUniqueData()
+        {
+            /* ülesseade */
+            IWebDriver driver = TestSetup_NavigateToIndex();
+            var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            bool isObjectFound = false;
+
+            /* tegevus */
+            foreach (var row in rowsOfTable)
+            {
+                var firstNameElement = row.FindElement(By.Id("IndexTableStudentFirstName")).Text;
+                if (firstNameElement == thisRunGuid)
+                {
+                    isObjectFound = true;
+                    var clickAction = row
+                        .FindElement(By.Id("IndexTableStudentActions"))
+                        .FindElement(By.Id("IndexTableStudentDetails_BTN"));
+                    clickAction.Click();
+                    break;
+                }
+            }
+            Thread.Sleep(1000);
+            //leiame andmed
+            string details_firstName = driver.FindElement(By.Id("DD_StudentFirstName")).Text; //unikaalne Guid
+            string details_lastName = driver.FindElement(By.Id("DD_StudentLastName")).Text;
+            string details_userId = driver.FindElement(By.Id("DD_StudentUserID")).Text;
+            string details_createdAt = driver.FindElement(By.Id("DD_StudentCreatedAt")).Text;
+            string details_modifiedAt = driver.FindElement(By.Id("DD_StudentModifiedAt")).Text;
+            IWebElement goBack = driver.FindElement(By.Id("DetailsBack_BTN"));
+            goBack.Click();
+            Thread.Sleep(1000);
+            bool isBackOnIndex = driver.FindElements(By.Id("IndexTable")).Count == 1; //kas oleme tagasi nimekirjas
+            driver.Quit();
+
+            /* Kontroll */
+            Assert.True(isObjectFound);
+            Assert.NotEmpty(details_firstName);
+            Assert.NotEmpty(details_lastName);
+            Assert.NotEmpty(details_userId);
+            Assert.Equal(thisRunGuid, details_firstName);
+            Assert.Equal("Automaattest", details_lastName);
+            Assert.Equal("selenium-test-01", details_userId);
+            //kuupäevad peavad olema kujul pp.kk.aaaa tt:mm
+            Assert.True(DateTime.TryParseExact(details_createdAt, "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out _));
+            Assert.True(DateTime.TryParseExact(details_modifiedAt, "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out _));
+            Assert.True(isBackOnIndex);
         }
 
         //eof
