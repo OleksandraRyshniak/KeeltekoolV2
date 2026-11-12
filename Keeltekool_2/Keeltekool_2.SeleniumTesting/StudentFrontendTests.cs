@@ -212,6 +212,70 @@ namespace Keeltekool_2.SeleniumTesting
             Assert.True(modifiedAt >= createdAt);
         }
 
+        /// <summary>
+        /// Test kustutab eelnevalt loodud ja muudetud õpilase kustutamise vaate kaudu.
+        /// Kontrollib, et kustutamise vaade näitab õige õpilase andmeid ning et pärast
+        /// "Kustuta" vajutamist suunatakse nimekirja, kus seda õpilast enam ei ole.
+        /// </summary>
+        [Fact]
+        [Order(4)]
+        public void Should_DeleteUniqueStudent_FromDeleteView()
+        {
+            /* ülesseade */
+            IWebDriver driver = TestSetup_NavigateToIndex();
+            var tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            bool isObjectFound = false;
+            int rowsBefore = rowsOfTable.Count; //ridade arv enne kustutamist
+
+            /* tegevus */
+            foreach (var row in rowsOfTable)
+            {
+                var firstNameElement = row.FindElement(By.Id("IndexTableStudentFirstName")).Text;
+                if (firstNameElement == thisRunGuid)
+                {
+                    isObjectFound = true;
+                    var clickAction = row
+                        .FindElement(By.Id("IndexTableStudentActions"))
+                        .FindElement(By.Id("IndexTableStudentDelete_BTN"));
+                    clickAction.Click();
+                    break;
+                }
+            }
+            Thread.Sleep(1000);
+            //kontrollime, et kustutamise vaates on õige õpilane
+            string delete_firstName = driver.FindElement(By.Id("DD_StudentFirstName")).Text;
+            string delete_lastName = driver.FindElement(By.Id("DD_StudentLastName")).Text;
+            IWebElement clickDelete = driver.FindElement(By.Id("DeleteDelete_BTN"));
+            clickDelete.Click();
+
+            //kontroll
+            Thread.Sleep(1000);
+            bool isObjectFoundAfterDelete = false;
+            tableOfIndex = driver.FindElement(By.Id("IndexTable"));
+            rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            int rowsAfter = rowsOfTable.Count; //ridade arv pärast kustutamist
+            foreach (var row in rowsOfTable)
+            {
+                var firstNameElement = row.FindElement(By.Id("IndexTableStudentFirstName")).Text;
+                if (firstNameElement == thisRunGuid)
+                {
+                    isObjectFoundAfterDelete = true;
+                    break;
+                }
+            }
+            driver.Quit();
+
+            Assert.True(isObjectFound);
+            Assert.Equal(thisRunGuid, delete_firstName); //kustutamise vaates on õige õpilane
+            Assert.Equal("Aavik", delete_lastName); //andmed on juba muudetud (Update test)
+            Assert.False(isObjectFoundAfterDelete); //õpilast pole enam nimekirjas
+            Assert.True(!isObjectFoundAfterDelete);
+            Assert.True(rowsAfter < rowsBefore || rowsBefore == 20); //ridu jäi vähemaks (kui nimekiri polnud täis)
+        }
+
         //eof
 
         ///<summary>
