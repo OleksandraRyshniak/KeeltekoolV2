@@ -15,21 +15,21 @@
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.FirstName)
         </dt>
-        <dd class="col-sm-9">
+        <dd class="col-sm-9" id="DD_StudentFirstName">
             @Html.DisplayFor(model => model.FirstName)
         </dd>
 
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.LastName)
         </dt>
-        <dd class="col-sm-9">
+        <dd class="col-sm-9" id="DD_StudentLastName">
             @Html.DisplayFor(model => model.LastName)
         </dd>
 
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.UserID)
         </dt>
-        <dd class="col-sm-9">
+        <dd class="col-sm-9" id="DD_StudentUserID">
             @Html.DisplayFor(model => model.UserID)
         </dd>
     </dl>
@@ -40,9 +40,9 @@
         <input type="hidden" asp-for="Id" />
 
         <input type="submit" value="Kustuta"
-               class="btn btn-danger" />
+               class="btn btn-danger" id="DeleteDelete_BTN"/>
 
         <a asp-action="Index"
-           class="btn btn-secondary">Tagasi nimekirja</a>
+           class="btn btn-secondary" id="DeleteBack_BTN">Tagasi nimekirja</a>
     </form>
 </div>

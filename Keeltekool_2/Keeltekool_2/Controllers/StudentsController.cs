@@ -28,8 +28,9 @@ namespace Keeltekool_2.Controllers
                     LastName = x.LastName,
                     UserID = x.UserID
                 })
-                .Take(20)
-                .OrderBy(x => x.LastName);
+                //esmalt sorteerime, siis võtame 20 esimest
+                .OrderBy(x => x.LastName)
+                .Take(20);
             return View(result);
         }
 

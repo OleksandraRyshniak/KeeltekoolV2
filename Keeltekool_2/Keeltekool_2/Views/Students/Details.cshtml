@@ -14,35 +14,35 @@
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.FirstName)
         </dt>
-        <dd class="col-sm-9">
+        <dd class="col-sm-9" id="DD_StudentFirstName">
             @Html.DisplayFor(model => model.FirstName)
         </dd>
 
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.LastName)
         </dt>
-        <dd class="col-sm-9">
+        <dd class="col-sm-9" id="DD_StudentLastName">
             @Html.DisplayFor(model => model.LastName)
         </dd>
 
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.UserID)
         </dt>
-        <dd class="col-sm-9">
+        <dd class="col-sm-9" id="DD_StudentUserID">
             @Html.DisplayFor(model => model.UserID)
         </dd>
 
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.CreatedAt)
         </dt>
-        <dd class="col-sm-9">
+        <dd class="col-sm-9" id="DD_StudentCreatedAt">
             @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")
         </dd>
 
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.ModifiedAt)
         </dt>
-        <dd class="col-sm-9">
+        <dd class="col-sm-9" id="DD_StudentModifiedAt">
             @Model.ModifiedAt.ToString("dd.MM.yyyy HH:mm")
         </dd>
     </dl>
@@ -50,8 +50,8 @@
 
 <div>
     <a asp-action="Update" asp-route-id="@Model.Id"
-       class="btn btn-primary">Muuda</a>
+       class="btn btn-primary" id="Update_BTN">Muuda</a>
 
     <a asp-action="Index"
-       class="btn btn-secondary">Tagasi nimekirja</a>
+       class="btn btn-secondary" id="DetailsBack_BTN">Tagasi nimekirja</a>
 </div>
