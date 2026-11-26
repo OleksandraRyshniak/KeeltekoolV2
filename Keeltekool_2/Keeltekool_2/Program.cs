@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Keeltekool_2.Core.ServiceInterface;
 using Keeltekool_2.ApplicationServices.Services;
+using System.Reflection;
+using Microsoft.OpenApi.Models;
 
 
 
@@ -18,6 +20,25 @@ namespace Keeltekool_2
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            //swagger
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Keeltekool API",
+                    Description = "An ASP.NET Core Web API for managing language courses, students and lecturers"
+                });
+
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+                // Core projekti mudelite XML (näidisväärtused <example>)
+                var coreXmlFilename = $"{typeof(LanguageCourse).Assembly.GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, coreXmlFilename));
+            });
 
             //services
 
@@ -52,6 +73,16 @@ namespace Keeltekool_2
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    options.RoutePrefix = "docs";
+                });
+            }
+
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
